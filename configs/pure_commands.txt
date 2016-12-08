@@ -1,0 +1,33 @@
+# Zookeeper on 101
+
+docker run -d --name=zookeeper --restart=always -p 2181:2181 -p 2888:2888 -p 3888:3888 -v /mesos-dockerized/zookeeper/var/lib/zookeeper/:/var/lib/zookeeper -v /mesos-dockerized/zookeeper/var/log/zookeeper/:/var/log/zookeeper  jeygeethan/zookeeper-cluster 10.91.97.101 1
+
+# Master on 101
+
+docker run -d --name=mesos-master --net=host   -e MESOS_PORT=80  -e MESOS_ZK=zk://10.91.97.101:2181/mesos   -e MESOS_QUORUM=1   -e MESOS_REGISTRY=in_memory -e MESOS_IP=10.91.97.101  -e MESOS_LOG_DIR=/var/log/mesos   -e MESOS_WORK_DIR=/var/tmp/mesos   -v "/mesos-dockerized/mesos-master/log/mesos:/var/log/mesos"   -v "/mesos-dockerized/mesos-master/tmp/mesos:/var/tmp/mesos" mesosphere/mesos-master:1.0.0
+
+
+# Marathon on 101
+
+docker run -d \
+-e MARATHON_HOSTNAME=gklab-97a-101 \
+-e MARATHON_HTTP_ADDRESS=10.91.97.101 \
+-e MARATHON_MASTER=zk://10.91.97.101:2181/mesos \
+-e MARATHON_ZK=zk://10.91.97.101:2181/marathon \
+-e  LIBPROCESS_IP=10.91.97.101 \
+--name marathon --net=host --restart always mesoscloud/marathon:1.1.1-centos-7
+
+
+# Slave on 102
+
+docker run -d --net=host --privileged --name=mesos-slave  -e MESOS_PORT=23 -e MESOS_MASTER=zk://10.91.97.101:2181/mesos   -e MESOS_SWITCH_USER=0   -e MESOS_CONTAINERIZERS=mesos   -e MESOS_LOG_DIR=/var/log/mesos  -e MESOS_IP=10.91.97.102 -e MESOS_WORK_DIR=/var/tmp/mesos   -v "/mesos-dockerized/mesos-slave/log/mesos:/var/log/mesos"   -v "/mesos-dockerized/mesos-slave/tmp/mesos:/var/tmp/mesos"   -v /var/run/docker.sock:/var/run/docker.sock   -v /cgroup:/cgroup   -v /sys:/sys   -v /usr/local/bin/docker:/usr/local/bin/docker mesosphere/mesos-slave:1.0.0
+
+
+# Slave on 103
+
+docker run -d --net=host --privileged --name=mesos-slave  -e MESOS_PORT=23 -e MESOS_MASTER=zk://10.91.97.101:2181/mesos   -e MESOS_SWITCH_USER=0   -e MESOS_CONTAINERIZERS=mesos   -e MESOS_LOG_DIR=/var/log/mesos  -e MESOS_IP=10.91.97.103 -e MESOS_WORK_DIR=/var/tmp/mesos   -v "/mesos-dockerized/mesos-slave/log/mesos:/var/log/mesos"   -v "/mesos-dockerized/mesos-slave/tmp/mesos:/var/tmp/mesos"   -v /var/run/docker.sock:/var/run/docker.sock   -v /cgroup:/cgroup   -v /sys:/sys   -v /usr/local/bin/docker:/usr/local/bin/docker mesosphere/mesos-slave:1.0.0
+
+
+#Slave on 104
+
+docker run -d --net=host --privileged --name=mesos-slave  -e MESOS_PORT=23 -e MESOS_MASTER=zk://10.91.97.101:2181/mesos   -e MESOS_SWITCH_USER=0   -e MESOS_CONTAINERIZERS=mesos   -e MESOS_LOG_DIR=/var/log/mesos  -e MESOS_IP=10.91.97.104 -e MESOS_WORK_DIR=/var/tmp/mesos   -v "/mesos-dockerized/mesos-slave/log/mesos:/var/log/mesos"   -v "/mesos-dockerized/mesos-slave/tmp/mesos:/var/tmp/mesos"   -v /var/run/docker.sock:/var/run/docker.sock   -v /cgroup:/cgroup   -v /sys:/sys   -v /usr/local/bin/docker:/usr/local/bin/docker mesosphere/mesos-slave:1.0.0
