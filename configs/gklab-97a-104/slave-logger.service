@@ -1,0 +1,18 @@
+[Unit]
+Description=Httpd for serving mesos-slave logs and results
+Requires=docker.service
+After=docker.service
+ 
+ 
+[Service]
+ExecStart=/usr/bin/docker run \
+	--name slave-logs \
+	-p 8080:80 \
+	-v /mesos-dockerized/mesos-slave/:/usr/local/apache2/htdocs \
+	httpd:latest
+ExecStop=/usr/bin/docker stop -t 2 slave-logs
+ExecStopPost=/usr/bin/docker rm -f slave-logs
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
