@@ -1,0 +1,31 @@
+[Unit]
+Description=Mesos slave in docker
+Requires=docker.service
+After=docker.service
+ 
+ 
+[Service]
+ExecStart=/usr/bin/docker run \
+	--net=host \
+	--privileged \
+	--name=mesos-slave \
+	-e MESOS_PORT=23 \
+	-e MESOS_MASTER=zk://10.91.97.101:2181/mesos \
+	-e MESOS_SWITCH_USER=0 \
+	-e MESOS_CONTAINERIZERS=mesos \
+	-e MESOS_LOG_DIR=/var/log/mesos \
+	-e MESOS_IP=10.91.97.103 \
+	-e MESOS_WORK_DIR=/var/tmp/mesos \
+	-v "/mesos-dockerized/mesos-slave/log/mesos:/var/log/mesos" \
+	-v "/mesos-dockerized/mesos-slave/tmp/mesos:/var/tmp/mesos" \
+	-v /var/run/docker.sock:/var/run/docker.sock \
+	-v /cgroup:/cgroup \
+	-v /sys:/sys \
+	-v /usr/local/bin/docker:/usr/local/bin/docker \
+	mesosphere/mesos-slave:1.0.0
+ExecStop=/usr/bin/docker stop -t 2 mesos-slave
+ExecStopPost=/usr/bin/docker rm -f mesos-slave
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
