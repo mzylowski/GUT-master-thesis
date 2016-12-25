@@ -13,11 +13,13 @@ ExecStart=/usr/bin/docker run \
 	-e MESOS_PORT=23 \
 	-e MESOS_MASTER=zk://10.91.97.101:2181/mesos \
 	-e MESOS_SWITCH_USER=0 \
-	-e MESOS_CONTAINERIZERS=mesos \
+	-e MESOS_CONTAINERIZERS=mesos,docker \
 	-e MESOS_LOG_DIR=/var/log/mesos \
 	-e MESOS_IP=10.91.97.103 \
 	-e MESOS_WORK_DIR=/var/tmp/mesos \
 	-e MESOS_HOSTNAME=gklab-97a-103 \
+	-e MESOS_EXECUTOR_REGISTRATION_TIMEOUT=5mins \
+	-e MESOS_DOCKER_KILL_ORPHANS=false \
 	-v "/mesos-dockerized/mesos-slave/log/mesos:/var/log/mesos" \
 	-v "/mesos-dockerized/mesos-slave/tmp/mesos:/var/tmp/mesos" \
 	-v /var/run/docker.sock:/var/run/docker.sock \
