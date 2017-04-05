@@ -1,0 +1,19 @@
+[Unit]
+Description=Singularity scheduler for mesos in docker
+Requires=docker.service
+After=docker.service
+ 
+[Service]
+ExecStart=/usr/bin/docker run \
+	--privileged \
+	-e LIBPROCESS_IP=192.168.0.12 \
+	--net=host \
+	--name=singularity \
+	-v /etc/singularity/singularity.yaml:/etc/singularity/singularity.yaml \
+	hubspot/singularityservice:0.13.0
+ExecStop=/usr/bin/docker stop -t 2 singularity
+ExecStopPost=/usr/bin/docker rm -f singularity
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
