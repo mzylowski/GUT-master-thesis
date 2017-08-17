@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{sidecap}
 \usepackage{wrapfig}
+\usepackage{makecell}
 \usepackage{subfig}
 \usepackage{enumerate}
 \usepackage{amssymb}
@@ -15,6 +16,7 @@
 \usepackage{floatflt}
 \usepackage{multirow}
 \usepackage{array}
+\usepackage{pbox}
 \usepackage{setspace}
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
@@ -197,7 +199,7 @@ Gdańsk, dnia  ........................  \hspace{5cm}
 \addcontentsline{toc}{section}{Streszczenie}
 \indent  TODO\\
 
-\noindent \textbf{Słowa kluczowe:} patrolowanie akwenów morskich, bezzałogowe łodzie nawodne, algorytm genetyczny, systemy agentowe
+\noindent \textbf{Słowa kluczowe:} TODO
  
 \newpage
 \section*{Abstract}
@@ -205,7 +207,7 @@ Gdańsk, dnia  ........................  \hspace{5cm}
 
 TODO\\
 \newline
-\textbf{Keywords:} patrolling sea areas, USV, genetic algorithm, agent systems
+\textbf{Keywords:} TODO
 
 
 \newpage
@@ -371,13 +373,97 @@ W maszynach wirtualnych obrazy to ogromne pliki, które zawierają w sobie infor
 	\item Udzielanie kontenerowi podwyższonych uprawnień – cześć operacji, które użytkownik chce wykonać w wewnątrz kontenera potrzebuje specjalnych uprawnień, szczególnie tam, gdzie chcemy dokonać komunikacji bądź zmiany z systemem hostem. Rozwiązania kontenerowe zazwyczaj pozwalają poprzez odpowiednie flagi udzielić kontenerowi odpowiednich uprawnień, tzn. przekazać do niego odpowiedni namespace. Przykładowo gdybyśmy chcieli w naszym kontenerze dodać nowe urządzenie sieciowe. Powinniśmy przekazać namespace sieciowy.
 	\item Błąd w jądrze systemu wpływa na cały system operacyjny hosta – jeśli w kontenerze dojdzie do błędu w jądrze systemu (ang. kernel panic) to cały system operacyjny hostujący kontenery zostanie zaafektowany. Jest to spowodowane wykorzystaniem kontenerach mechanizmu współdzielenia jądra systemu.
 	\item Rozwiązania izolacji zróżnicowane jakościowo w różnych rozwiązaniach kontenerowych – „lekkie” podejście do izolacji w kontenerach powoduje, że niektóre zadania mogą wpływać na system hosta. Chodzi tutaj o zadania, które bardzo szybko zajmują duże bloki pamięci.
-	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów. Jednocześnie cały czas rozwijany jest standard kontenerów, co również powoduje od rozwiązań kontenerowych 
+	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów[TODO big fail DOCKER]. Jednocześnie cały czas rozwijany jest standard opisujący konteneryzaję, co utrudnia osięgniecie w projektach kontenerowych wysokiej stabilności. 
 \end{itemize}
 
 \newpage
 
-\chapter{Wprowadzenie do systemów wieloagentowych}
+\chapter{Przegląd rozwiązań umożliwiających uruchamianie zadań na klastrach}
 
+\section{Interfejs transmisji wiadomości}
+
+\indent \indent Message Passing Interface (MPI, ang., interfejs transmisji wiadomości)[26] - protokół komunikacyjny będący standardem przesyłania komunikatów pomiędzy procesami programów równoległych działających na jednym lub więcej komputerach. Interfejs ten wraz z protokołem oraz semantyką specyfikuje, jak jego elementy winny się zachowywać w dowolnej implementacji. Celami MPI są wysoka jakość, skalowalność oraz przenośność. MPI jest dominującym modelem wykorzystywanym obecnie w klastrach komputerów oraz superkomputerach. Pierwsza wersja standardu ukazała się w maju 1994 r. Standard MPI implementowany jest najczęściej w postaci bibliotek, z których można korzystać w programach tworzonych w różnych językach programowania.
+
+Interfejs MPI ma na celu dostarczenie wirtualnej topologii, synchronizacji oraz zapewnienie komunikacji pomiędzy zestawem procesów (które zostały przypisane do węzłów / serwerów / instancji komputerów) w niezależny od języka sposób, przy podobnej do niego składni. Programy MPI zawsze współpracują z procesami, aczkolwiek programiści powszechnie odnoszą się do procesów jako procesorów. Zazwyczaj dla uzyskania maksymalnej wydajności, każdy CPU (lub rdzeń w wielordzeniowym procesorze) ma przypisany pojedynczy proces. Przypisanie to ma miejsce w czasie rzeczywistym przez agenta, który uruchamia program MPI (zazwyczaj nazywany mpirun lub mpiexec).
+
+Biblioteka funkcji MPI zawiera (ale nie jest ograniczona do) operacji: punkt w punkt, typu randezvous oraz wysyłania/odbierania. Dostępne topologie logiczne to kartezjańska oraz oparta na grafie. Dane mogą być wymieniane pomiędzy parami procesów (operacje wysyłania/odbierania), występuje możliwość łączenia częściowych wyników obliczeń (operacje rozbijania i łączenia). Charakterystyczna jest tu również synchronizacja węzłów oraz identyfikacja używanego procesora, do którego jest przypisany proces, jak i dostępność sąsiadujących procesów w logicznej topologii. Operacje typu punkt w punkt obsługiwane są w trybach synchronicznym, asynchronicznym lub poprzez bufor.
+
+Obecnie dokonano implementacji standardu MPI na wiele platform i języków programowania:
+
+\begin{itemize}
+	\item OpenMPI – Celem OpenMP jest implementacja wielowątkowości, czyli metody zrównoleglania programów komputerowych, w której główny „wątek programu” (czyli ciąg następujących po sobie instrukcji) „rozgałęzia” się na kilka „wątków potomnych”, które wspólnie wykonują określone zadanie. Wątki pracują współbieżnie i mogą zostać przydzielone przez środowisko uruchomieniowe różnym procesorom. Fragment kodu, który ma być wykonywany równolegle, jest w kodzie źródłowym oznaczany odpowiednią dyrektywą preprocesora. Tuż przed wykonaniem tak zaznaczonego kodu główny wątek rozgałęzia się na określoną liczbę nowych wątków. Logo rozwiązania przedstawione jest na rysunku \ref{mpi_logo}. Celem przyświecającym twórcom tej implementacji (jak wskazuje sama nazwa projektu) była otwartość kodu i dostarczanie projektu jako „wolne oprogramowanie”.
+	\begin{figure}[ht!]
+		\centering
+		\includegraphics[scale=0.7]{pics/mpi.jpg}
+		\caption{Logo projektu OpenMPI}
+		\label{mpi_logo}
+	\end{figure}
+	\item MPICH to ogólnodostępna, darmowa i przenośna implementacja standardu MPI. Pozwala na przekazywanie komunikatów pomiędzy aplikacjami działającymi równolegle. Nadaje się do stosowania na małych klastrach. Najnowszą wersję biblioteki MPICH można pobrać ze strony domowej projektu. Biblioteki MPICH można używać zarówno na systemach klasy MS Windows jak i Unix. Rozwinięciem MPICH jest MPICH2. Powstała także wersja tej biblioteki o nazwie MPICH-G2 pozwalająca uruchamiać aplikacje równoległe w środowiskach gridowych, z wykorzystaniem pakietu Globus Toolkit jako warstwy pośredniej. Dzięki temu rozwiązaniu aplikacja może działać na kilku klastrach rozproszonych geograficznie.
+	\item MSMPI – Microsoft MPI – Implementacja standardu MPI rozwijana przez korporację Microsoft. Jej głównymi założeniami jest wsparcie dla języka C\# i technologii .NET, a w szczególności uruchamianie sklastrowanych zapytań typu LINQ.
+\end{itemize}
+
+Podsumowując: MPI pozwala przy zastosowaniu odpowiednich standardów, osiągnąć bardzo wysoki poziom utylizacji klastra. Niestety wymaga to napisanie aplikacji w oparciu o ten standard, co z kolei prowadzi do wysokich kosztów jakie musi ponieść producent. MPI świetnie nadaje się do aplikacji w których wykonujemy zestaw trudno obliczeniowych działań, natomiast sama architektura aplikacji jest stosunkowo prosta. 
+
+Główną wadą podejścia MPI jest konieczność obsłużenia logiki klastra obliczeniowego w każdej napisanej aplikacji. Atrakcyjniejszym wydaje się podejście, w którym programista aplikacji będzie poziom wyżej, tzn. aplikacja zostanie wytworzona klasycznie, a odpowiednia mechanika zainstalowana na chmurze rozwiąże problem klastrowania.
+
+\section{Przegląd systemów konteneryzacji}
+\subsection{Rozwiązanie konteneryzacyjne \textit{Docker}}
+\indent \indent Docker (Rys. \ref{docker_logo}) to otwarta aplikacja napisana w języku Go lang wydawana na licencji Apache 2.0. Oprogramowanie wspiera większość popularnych dystrybucji systemu Linux, oraz system Microsoft Windows 10. Główna idea i misja to Dockera to: Połącznie w kompletny system plików wszystkich zależności potrzebnych do uruchomienia wybranego oprogramowania, tj. kod, środowisko wykonawcze, narzędzia systemowe, biblioteki systemu – wszystko to co można zainstalować na fizycznym serwerze. Następnie uruchomienie takiego systemu plików w sposób izolowany i zagwarantowanie, że wybrany pakiet oprogramowania zawsze będzie działał tak samo na różnej architekturze[28].
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[scale=0.7]{pics/docker.png}
+	\caption{Logo systemu konteneryzacji Docker}
+	\label{docker_logo}
+\end{figure}
+
+Doker do izolowania zasobów wykorzystuje mechanizmy cgroups oraz namespaces z Linuxowego jądra systemu. Problem montowania zasobów rozwiązuje za pomocą OverlayFS a ponadto umożliwia zmianę tego mechanizmu na AUFS (autorskie rozwiązanie firmy Docker). 
+
+Docker jest aplikacją, która dostarcza wiele różnorakich funkcji związanych z uruchamianiem, przetwarzaniem i budowaniem aplikacji. Jednakże sam mechanizm izolacji i uruchamiania kontenera realizowany jest przez osobne oprogramowanie (również rozwijane przez firmę docker). W pierwszych wersjach dockera tym rozwiązanie była biblioteka libcontainer, ale ze względu na wiele zmian architektonicznych oraz zainteresowanie firm zewnętrznych prace nad nim zostały porzucone a sam projekt zmienił nazwę na runc. Rozwiązaniem domyślnie stosowanym w dockerze jest właśnie biblioteka runc. Inne dostępne mechanizmy izolacji to libvirt, LXC (\textit{Linux Containers}) lub mechanizm systemd-nspawn.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[scale=0.7]{pics/docker_arch.png}
+	\caption{Wysokopoziomowe spojrzenie na architekturę systemu Docker}
+	\label{docker_arch}
+\end{figure}
+
+Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Docker. Na samym dole stosu znajduje się serwer, czyli fizyczna maszyna na której uruchomiony jest system operacyjny. Ten uruchomiony system będzie służył do uruchamiania kontenerów i to jego zasoby będą wydzielane dla poszczególnych kontenerów. Na systemie hoście należy zainstalować pakiet docker-engine. Umożliwi to nam uruchamianie kontenerów z przygotowanych wcześniej obrazów, w których będą znajdowały się faktyczne aplikacje oraz wszystkie potrzebne tym aplikacjom biblioteki. Zaleca się aby uruchamiać tylko jedną aplikację w danym kontenerze. Ułatwia to chociażby wyciąganie logów z wnętrza kontenera, oraz odpowiedniemu wyizolowaniu aplikacji, gdyż zasoby możemy podać tyko dla konkretnego kontenera a nie dla każdego procesu. Tabela \ref{docker_cli} ukazuje listę komend rozwiązania docker, wraz z krótkim opisem i przykładem użycia. Najważniejszymi z nich są \textit{run, stop, delete, ps, images, build oraz exec}. Pozwalają one przejść tzw. \textit{Container lifecycle}, czyli cykl życia kontenera – zbudowanie obrazu, uruchomienie go, wykonanie w nim jakiejś operacji oraz zatrzymanie a następnie usunięcie go.
+
+\begin{table}[h!]
+\caption{Ważniejsze polecenia w programie docker (dla wersji 1.13.1)}
+\label{docker_cli}
+\begin{tabular}{|p{3cm}|p{11cm}|}
+  \hline 
+  \textbf{Polecenie} & \textbf{Opis oraz przykład}\\
+  \hline
+  docker attach & Podłączenie się do uruchomionego już kontenera, celem przechwycenia wyjścia z aplikacji uruchomionej w kontenerze. Kontener należy wskazać poprzez identyfikator lub nazwę (pole obowiązkowe). \newline docker attach world-community-grid \\
+  \hline
+  docker build & Zbudowanie kontenera w oparciu o podany plik dockerfile. Narzędzie do budowania obrazów odszuka obraz który ma być podstawą dla naszego obrazu, a następnie wykona na nim wszystkie sekwencje wypisane w pliku Dockerfile. Ostatecznie na dysku zostanie zapisany gotowy do użycia obraz. O ile nie podamy parametru –tag jedynym sposobem na dostęp do obrazu będzie odwołanie się poprzez nadane ID.
+  \newline docker build . -t  world-community-grid \newline Zakładając, że w bierzącym katalogu znajduje się plik poprawny plik Dockerfile po uruchomieniu tej komendy zostanie on przetworzony. Zbudowany obraz otrzyma ID oraz zostanie otagowany jako  world-community-grid:latest \\
+  \hline
+  docker commit & Umożliwia stworzenie nowego obrazu w oparciu o już istniejący kontener lub obraz. \newline docker commit --change "ENV DEBUG true" c3f279d17e0a rsmitty/boinc \\
+  \hline
+  docker cp & Kopiuje pliki między kontenerem a maszyną hostem i odwrotnie \newline docker cp /tmp/foo.txt world-community-grid:/tmp \\
+  \hline
+  docker create & Tworzy kontener na zasadzie identycznej jak docker run, z tą różnicą że kontener nie jest jeszcze uruchomiony i jego uruchomienie należy wykonać oddzielnie za pomocą docker start \newline docker create -t -i fedora bash \\
+  \hline
+  docker exec & Wykonuje podane polecenie we wskazanym kontenerze. Odpowiednie flagi decydują o lokalizacji wyjścia z podanego polecenia. \newline docker exec -it  world-community-grid bash \newline Uruchomi basha w kontenerze w sposób interaktywny. \\
+  \hline 
+  docker images & Wyświetlanie listy obrazów pobranych i gotowych do użycia w systemie. \newline docker images –all \newline Wyświetlenie listy wszystkich obrazów znajdujących się na maszynie. \\
+  \hline docker inspect & Wyświetlenie bardzo szczegółowych informacji na temat obrazu lub kontenera. \newline docker inspect  world-community-grid \\
+  \hline docker ps & Wyświetlenie listy uruchomionych kontenerów. \newline docker ps -a \newline Wyświetli listę wszystkich kontenerów w systemie, nawet tych, które są zatrzymane bądź skończyły pracę. \\
+  \hline docker pull & Pobieranie ze zdalnego repozytorium obrazów wskazanego obrazu \newline docker pull rsmitty/boinc \\
+  \hline docker push & Opublikowanie na zewnętrznym repozytorium wskazanego obrazu obecnego w systemie \newline docker push rsmitty/boinc \\
+  \hline docker rm & Usunięcie kontenera o wskazanej nazwie/ID \newline docker rm  world-community-grid \\
+  \hline docker run & Stworzenie i uruchomienie kontera o określonych parametrach. \newline \newline docker run --restart=always -d --name wcg -e "boincurl=www.worldcommunitygrid.org" -e "boinckey=1033877\_ca3e3556f2fcafbb8edc82447e16b58c" rsmitty/boinc \newline Utworzy kontener z obrazu rsmitty/boinc (a jeśli taki nie jest obecny na dysku to docker podejmie próbę pobrania go). Do kontenera zostaną przekazane dwie zmienne środowiskowe i zostanie nadana mu nazwa world-community-grid.  \\
+  \hline
+\end{tabular} 
+\end{table}
+
+
+\chapter{Wprowadzenie do systemów wieloagentowych}
+\newpage
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}
