@@ -15,6 +15,7 @@
 \usepackage{wrapfig} 
 \usepackage{floatflt}
 \usepackage{multirow}
+\usepackage{comment}
 \usepackage{array}
 \usepackage{pbox}
 \usepackage{setspace}
@@ -430,7 +431,7 @@ Docker jest aplikacją, która dostarcza wiele różnorakich funkcji związanych
 
 Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Docker. Na samym dole stosu znajduje się serwer, czyli fizyczna maszyna na której uruchomiony jest system operacyjny. Ten uruchomiony system będzie służył do uruchamiania kontenerów i to jego zasoby będą wydzielane dla poszczególnych kontenerów. Na systemie hoście należy zainstalować pakiet docker-engine. Umożliwi to nam uruchamianie kontenerów z przygotowanych wcześniej obrazów, w których będą znajdowały się faktyczne aplikacje oraz wszystkie potrzebne tym aplikacjom biblioteki. Zaleca się aby uruchamiać tylko jedną aplikację w danym kontenerze. Ułatwia to chociażby wyciąganie logów z wnętrza kontenera, oraz odpowiedniemu wyizolowaniu aplikacji, gdyż zasoby możemy podać tyko dla konkretnego kontenera a nie dla każdego procesu. Tabela \ref{docker_cli} ukazuje listę komend rozwiązania docker, wraz z krótkim opisem i przykładem użycia. Najważniejszymi z nich są \textit{run, stop, delete, ps, images, build oraz exec}. Pozwalają one przejść tzw. \textit{Container lifecycle}, czyli cykl życia kontenera – zbudowanie obrazu, uruchomienie go, wykonanie w nim jakiejś operacji oraz zatrzymanie a następnie usunięcie go.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \caption{Ważniejsze polecenia w programie docker (dla wersji 1.13.1)}
 \label{docker_cli}
 \begin{tabular}{|p{3cm}|p{11cm}|}
@@ -461,6 +462,89 @@ Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Dock
 \end{tabular} 
 \end{table}
 
+ Nie trudno zauważyć, że w problemie konteneryzacji najważniejsze są dwa zagadnienia, tj. obsługa cyklu życia kontenera oraz zarządzanie obrazami. Obrazy dockerowe są trzymane w repozytoriach obrazów (ang. docker registry) a zarządzanie nimi odbywa się w sposób podobny do klasycznych repozytoriów kodu. W centrum danych można uruchomić takie repozytorium i przechowywać na nim obrazy. Dzięki temu zabiegowi wystarczy tylko raz zbudować obraz (co przy złożonych obrazach zajmuje wiele czasu) i po jego przesłaniu (polecenie docker push) można taki obraz pobrać (polecenie docker pull) na pozostałych serwerach w centrum danych.
+ 
+ Obrazy w dokerze opierają się na plikach Dockerfile. Są to pliki tekstowe, w których musi zostać uwzględniona notacja Dockera oraz przygotowane dla użytkownika dyrektywy. Najważniejsze z nich to \textit{FROM, RUN}, oraz \textit{CMD}:
+
+\begin{itemize}
+\item Dyrektywa \textit{FROM} pozwala na wskazanie jaki obraz ma być podstawą dla opisywanego właśnie obrazu. Ta dyrektywa powinna pojawiać się na samym początku pliku Dockerfile.
+\item \textit{RUN} pozwala na wykonywanie poleceń. Narzędzie do budowania obrazów uruchomi każdą komendę i jej wynik zapisze do „mini” obrazu (warstwy). Przy zakończeniu budowania wszystkie warstwy zostaną złączone w jeden obraz. To podejście ma ogromną zaletę: przebudowywanie komend raz już wykonanych jest szybkie, gdyż po prostu zostanie użyta zbudowana wcześniej warstwa. Przykładowy stos warstw obrazu pokazany jest na rysunku (Rys. \ref{docker_layers}).
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[scale=0.7]{pics/docker_layers.png}
+	\caption{Lista warstw jakie składają się na obraz ‘expressweb’.}
+	\label{docker_layers}
+\end{figure}
+\item \textit{CMD} określa komendę jaka zostanie uruchomiona przy starcie kontenera. Poprawne ustawienie tego polecenia jest kluczowe dla właściwego działania aplikacji. To właśnie logi tego polecenia będą znajdowały się na wyjściu polecenia docker logs.
+\end{itemize}
+
+W związku z tym, że nie każdy użytkownik ma zestawione swoje repozytorium firma docker uruchomiła swoje własne, które jest dostępne w Internecie. Prócz repozytorium obrazów jest dostępny też web serwis, który w przyjaznej firmie prezentuje wszystkie informacje. Produkt jest dostępny pod adresem https://hub.docker.com
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=1]{pics/quay.png}
+	\caption{Historia przebudowywania obrazu mesos-master napisanego na potrzeby tej pracy.}
+	\label{quay_io}
+\end{figure}
+
+Ze względu na monopol dockera pojawił się projekt wspierający inne formaty obrazów. Mowa tutaj o repozytorium i web serwisie dostępnym pod adresem https://quay.io. Na rysunku \ref{quay_io} widoczny jest zrzut ekranu z serwisu quay.io.
+
+TODO: W razie czego można opisać jeszcze: marketing dockera, nie trzymanie się standardów, problemy platformy, praktyczne zastosowania.
+
+\subsection{Rozwiązanie konteneryzacyjne \textit{rkt}}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=1]{pics/rkt-horizontal-color.png}
+	\caption{Logo projektu rkt}
+	\label{rkt_logo}
+\end{figure}
+
+Rkt (Rys. \ref{rkt_logo}) jest produktem sponsorowanym przez firmę CoreOS i jest próbą wydarcia części rynku Dockerowi. Rkt jest aplikacją pozwalającą uruchamiać kontenery na systemach z rodziny Linux, a celem przyświecającym twórcom aplikacji było zaprojektowanie jej tak by:
+
+\begin{itemize}
+\item Bazowała na \textit{podach} - \textit{pod} to mechanizm pozwalający uruchamiać wiele kontenerów w jednym bycie. Ułatwia to łączenie aplikacji między sobą i ich organizowanie. Kontenery realizujące zadania ze sobą powiązane mogą być trzymane w jednym podzie, co dodatkowo oddziela je od innych zadań w systemie. Zadania w jednym podzie mogą interferować między sobą. Pod można rozumieć jako kolejną wartstę abstrakcji oddzielająca procesy uruchomione przez system operacyjny.
+\item Zapewniała bezpieczeństwo bez żadnych dodatkowych konfiguracji - natywne wsparcie dla mechanizmu \textit{SELinux} oraz uruchamianie aplikacji w maszynach wirtualnych.
+\item Integrowała się z innymi systemami związanymi z uruchamianiem zadań (\textit{systemd}, \textit{upstart}) oraz z orkiestratorami zadań na klastrach (\textit{Kubernetes}, \textit{Nomad}).
+\item Wspierała i zachowywała standardy dotyczące konteneryzacji oraz współpracowała z istniejącymi formatami obrazów. Rkt potrafi uruchomić obraz w specyfikacji \textit{OCI} lub obraz zbudowany oprogramowaniem docker. Produkt wykorzystuje rozwiązania projektu \textit{Container Networking Interface}, który rozwiązuje problem sieci między uruchomionymi kontenerami.
+\end{itemize}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=1]{pics/rkt-architecure.jpg}
+	\caption{Architektura rozwiązania rkt}
+	\label{rkt_arch}
+\end{figure}
+
+Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wyraźne rozgraniczanie poszczególnych modułów systemów co umożliwia wprowadzenie warstwowej podmienialnej architektury całego rozwiązania. Na rysunku \ref{rkt_arch} przedstawiono architekturę tego rozwiązania (przy uruchomionym jednym podzie i dwóch kontenerach). I tak:
+
+\begin{itemize}
+\item stage0 - jest to poziom systemu operacyjnego i procesu samej aplikacji rkt. 
+\item stage1 - jest to poziom poda, swego rodzaju baza dla dalszego uruchamiania kontenerów. Stage1 to bardzo mocno okrojony system plików, który umożliwia uruchamianie prostych aplikacji i ploleceń systemu operacyjnego. W tym miejscu uwidacznia się jedna z największych sił rozwiązania rkt. Stage pierwszy może być podmieniany (jest tak naprawdę obrazem systemu plików). W zależności od wskazanego obrazu określimy sposób w jaki rkt będzie dokonywał izolowania uruchomionych później kontenerów. Aktualnie wraz z rozwiązaniem dostarczanych jest pięć obrazów, które mogą być tutaj wykorzystane (tabela \ref{rkt_flavors}).
+\item stage2 - jest to poziom aplikacji uruchomionej w kontenerze. Wskazany obraz zostaje uruchomiony za pomocą odpowiedniego \textit{hypervizora}. 
+\end{itemize}
+
+\begin{table}[!htbp]
+\caption{Lista obrazów, które mogą być użyte jako stage1 w systemie konteneryzacji rkt}
+\label{rkt_flavors}
+\centering
+
+\begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
+  \hline 
+  \textbf{Nazwa rozwiązania} & \textbf{Wykorzystywany mechanizm izolacji} & \textbf{Opis mechanizmu izolacji}\\
+  \hline
+  Fly & System plików i polecenie chroot & Ten mechanizm izolacji polega na skopiowaniu zawartości obrazu do innej lokalizacji a następnie wykonaniu tam polecenia chroot. W tym podejściu nie istnieje w zasadzie izolacja procesów uruchomionych w kontenerze. Będą one interferowały inne aplikacje uruchomione w systemie operacyjnym. Jedynym zystkiem z tej izolacji uniemożliwieniu użytkownikowi wyjście poza kontener (ucieczka do systemu gospodarza). \\
+  \hline
+  Rkt stage1 & systemd-nspawn, cgroups & Domyślny mechanizm izolacji stosowany w rkt. Zostanie wykorzystany jeśli parametr --stage1-name nie zostanie podany do polecenia uruchamiającego kontener. Jest to mechanizm analogiczny do już wcześniej opisanego sposobu izolacji wykorzystywanego w Dokerze. Podobnie jak w mechaniźmie \textit{Fly} zawartość obrazu jest rozpakowywana do lokalizacji w systemie operacyjnym a następnie polecenie chroot więzi użytkownika w odpowiednim katalogu. W tym rozwiązaniu jednak procesy kontenera są izolowane za pomocą mechanizm \textit{cgroup} (analogicznie jak w dokerze). \\
+  \hline
+  LKVM & Wirtualizacja KVM & To podejście jest kolejnym wyróżnikiem rkt. LKVM (\textit{lightweight} KVM) to niewielka aplikacja, która umożliwa uruchamianie maszyn wirtualnych wykorzystując sprzętowe technologie wirtualizacyjne. Dla procesorów AMD jest to technologia AMD-V, zaś dla procesorów rodziny intel Intel VT-x. Uruchomienie kontenera za pomocą programu LKVM to w zasadzie uruchomienie prostej maszyni wirtualnej. To podejście zapewnia wysoki poziom izolacji. \\
+  \hline
+  QEMU & Wirtualizacja KVM & Projekt LKVM w swoich założeniach miał być projektem lekkim, co wraz z rozwojem projektu rkt rodziło wiele problemów. Latem 2016 roku podjęto decyzje by zaimplementować konteneryzację wykorzystując technologię QEMU. QEMU jest rozwiązaniem bardzo rozbudowanym - umożliwia zarówno wykorzystanie emulacji sprzętowej jak i technologi KVM. Przez złożoność rozwiązania doszło do znaczącego spadku wydajności i wkrótce quemu zostało zastąpione pakietem quemu-lite. \\
+  \hline
+  XEN & Wirtualizacja XEN & Zewnętrzni klienci produktu rkt aby wypromować swoje rozwiązanie przygotowali stage1 oparty na wirtualizacji XEN. Na dzień pisania tej pracy projekt jest w fazie rozwojowej i nie jest używalny produkcyjnie. \\
+  \hline
+\end{tabular} 
+\end{table}
 
 \chapter{Wprowadzenie do systemów wieloagentowych}
 \newpage
@@ -490,6 +574,11 @@ Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Dock
 \bibitem{ad13}Krause S.,\textit{The private vs public cloud debate: Which to deploy, and why consider hybrid?}, cloudcomputing news.
 \bibitem{ad14}Freedman R., \textit{Cloud computing migration issues: What you need to know} [online].[dostęp 14.04.2017]. Dostępny w Internecie: http://www.techrepublic.com/blog/it-consultant/cloud-computing-migration-issues-what-you-need-to-know/.
 \bibitem{ad15}Krasuski T., Łoś J., Szostakiewicz M.,\textit{Wstęp do wirtualizacji}, Uniwersytet Warszawski, 2005.
+\begin{comment}
+....
+https://github.com/rkt/rkt/pull/2952
+https://github.com/rkt/rkt/issues/3019#issuecomment-246637570
+\end{comment}
 
 
 \end{thebibliography}
