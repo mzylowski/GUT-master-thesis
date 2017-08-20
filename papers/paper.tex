@@ -12,7 +12,7 @@
 \usepackage{geometry}
 \usepackage{pgfpict2e}
 \usepackage{tikz}
-\usepackage{wrapfig} 
+\usepackage{wrapfig}
 \usepackage{floatflt}
 \usepackage{multirow}
 \usepackage{comment}
@@ -22,11 +22,11 @@
 \usepackage{helvet}
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{chngcntr}
-\usepackage{amsmath} 
+\usepackage{amsmath}
 \usepackage{xcolor,colortbl}
 \usepackage{cite}
 \counterwithin{figure}{chapter}
-\newcommand{\done}{\cellcolor{teal}done} 
+\newcommand{\done}{\cellcolor{teal}done}
 
 \begin{document}
 
@@ -43,8 +43,8 @@
 
 \begin{center}
 \begin{tabular}{l l r}
- 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\  
-\end{tabular} 
+ 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\
+\end{tabular}
 \end{center}
 
 \vspace*{0.5cm}
@@ -60,10 +60,10 @@
 	Forma studiów: stacjonarne\\
 	\vspace*{0.1cm}
 	Kierunek studiów: Informatyka\\
-	\vspace*{0.1cm}	
+	\vspace*{0.1cm}
 	Specjalność/profil: TODO!!!\\
 
-	
+
 \end{flushleft}
 
 \vspace*{1.8cm}
@@ -83,22 +83,22 @@ Tytuł pracy w języku angielskim: TODO\\
 \vspace*{1.5cm}
 \renewcommand{\arraystretch}{1.5}
 \begin{tabular}{|l  |l|}
-	\hline 
+	\hline
  	\multicolumn{2}{|l|} {Potwierdzenie przyjęcia pracy } \\
-	\hline 
+	\hline
 	Opiekun pracy & Kierownik Katedry/Zakładu \hspace*{2cm} \\
 	&\\
 	\small \textit{podpis} & \small  \textit{podpis}\\
 	\hline
 	dr inż. Jerzy Demkowicz & dr hab. inż. Marek Moszyński, prof. nadzw. PG \hspace*{2cm} \\
 	&\\
-    \hline 
+    \hline
 
-\end{tabular} 
+\end{tabular}
 
 \vspace*{2.5cm}
 
-\begin{flushleft} 
+\begin{flushleft}
 	Data oddania pracy do dziekanatu: \\
 \end{flushleft}
 
@@ -115,13 +115,13 @@ Tytuł pracy w języku angielskim: TODO\\
 
 \begin{center}
 \begin{tabular}{l l r}
- 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\  
-\end{tabular} 
+ 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\
+\end{tabular}
 \end{center}
 
 \vspace*{0.1cm}
 
-\begin{flushleft} 
+\begin{flushleft}
 	\large{\bf{OŚWIADCZENIE}}\\
 \end{flushleft}
 
@@ -138,9 +138,9 @@ Tytuł pracy w języku angielskim: TODO\\
 	Wydział: Wydział Elektroniki, Telekomunikacji i Informatyki\\
 	\vspace*{0.1cm}
 	Kierunek: informatyka\\
-	\vspace*{0.1cm}	
+	\vspace*{0.1cm}
 	Poziom studiów: II stopnia - magisterskie\\
-	\vspace*{0.1cm}	
+	\vspace*{0.1cm}
 	Forma studiów: stacjonarne\\
 
 \end{flushleft}
@@ -201,7 +201,7 @@ Gdańsk, dnia  ........................  \hspace{5cm}
 \indent  TODO\\
 
 \noindent \textbf{Słowa kluczowe:} TODO
- 
+
 \newpage
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
@@ -241,7 +241,7 @@ Jeśli strona internetowa osiągnie prawdziwy sukces i obsługa będzie wymagał
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.7]{pics/Selection_615.png} 
+	\includegraphics[scale=0.7]{pics/Selection_615.png}
 	\caption{Centrum danych Facebooka w Oregonie, grafika pochodzi ze strony http://siteselection.com/}
 	\label{facebook_dc}
 \end{figure}
@@ -296,9 +296,9 @@ Rozwiązanie Mesos wybrałem ze względu na jego stabilność i wysoki poziom ad
 
 Całe oprogramowane, które zostało przenalizowane bądź opisane w tej pracy było oprogramowaniem otwartym i darmowym. Również wszystkie produkty powstałe wraz z tą pracą są udostępnione na takiej właśnie licencji.
 
-Mesos jest rozwiązaniem rozpowszechnianym na licencji Apache 2.0. Od lat produktem zajmuje się firma Mesosphere. Firma ta przygotowała grupę rozwiązań związanych z chmurami obliczeniowymi oraz silnie włączyła się w rozwijanie Mesosa. Dzięki wsparciu tej firmy udało się wydać wersję 1.0 (przeskok z wersji 0.26). Przyłączenie się Mesosphery do rozwoju Mesosa przyniosło też minusy. Najbardziej znaczącym z nich jest spadek zainteresowania „czystym” Mesosem na rzecz produktu Mesosphery „DC/OS” – Data Center Operating System. Narzędzie prócz samego Mesosa zawiera zaawansowany instalator, wsparcie dla sklastrowanego systemu przechowywania danych, zunifikowany dostęp do logów, oraz rozbudowanego klienta CLI. Rozwiązanie DC/OS dostępne jest w dwóch wersjach - darmowej oraz skierowanej do klientów biznesowych. Wykupienie rozwiązania biznesowego pozwoli na korzystanie z pomocy technicznej, oraz zaawansowanych mechanizmów dotyczących bezpieczeństwa na uruchomionym klastrze. 
+Mesos jest rozwiązaniem rozpowszechnianym na licencji Apache 2.0. Od lat produktem zajmuje się firma Mesosphere. Firma ta przygotowała grupę rozwiązań związanych z chmurami obliczeniowymi oraz silnie włączyła się w rozwijanie Mesosa. Dzięki wsparciu tej firmy udało się wydać wersję 1.0 (przeskok z wersji 0.26). Przyłączenie się Mesosphery do rozwoju Mesosa przyniosło też minusy. Najbardziej znaczącym z nich jest spadek zainteresowania „czystym” Mesosem na rzecz produktu Mesosphery „DC/OS” – Data Center Operating System. Narzędzie prócz samego Mesosa zawiera zaawansowany instalator, wsparcie dla sklastrowanego systemu przechowywania danych, zunifikowany dostęp do logów, oraz rozbudowanego klienta CLI. Rozwiązanie DC/OS dostępne jest w dwóch wersjach - darmowej oraz skierowanej do klientów biznesowych. Wykupienie rozwiązania biznesowego pozwoli na korzystanie z pomocy technicznej, oraz zaawansowanych mechanizmów dotyczących bezpieczeństwa na uruchomionym klastrze.
 
-Rozwój platformy sprawił, że w literaturze i Internecie brakuje informacji o samym Mesosie. Z tego powodu wraz z powstaniem tej pracy przygotowany został produkt Mesos-dockerized – udostępniony na repozytorium na github.com. Mój produkt umożliwia zestawienie najnowszej stabilnej wersji Mesosa w kontenerach na swoim klastrze. 
+Rozwój platformy sprawił, że w literaturze i Internecie brakuje informacji o samym Mesosie. Z tego powodu wraz z powstaniem tej pracy przygotowany został produkt Mesos-dockerized – udostępniony na repozytorium na github.com. Mój produkt umożliwia zestawienie najnowszej stabilnej wersji Mesosa w kontenerach na swoim klastrze.
 
 Drugim produktem, który powstał wraz z tą pracą jest proste narzędzie pozwalające na uruchamianie zadań poprzez poszczególne frameworki Mesosa. Również udostępniony jest on na githubie, jako wolne oprogramowanie udostępnione na licencji MIT.
 
@@ -326,7 +326,7 @@ To kryterium jest kluczowe dla pojęcia wirtualizacji. Instrukcje aplikacji powi
 	\item Emulacja (pełna wirtualizacja z dynamiczną rekompilacją) - program emulujący zazwyczaj udaje wyłącznie inny rodzaj sprzętu komputerowego bez jakiegokolwiek oprogramowania, czego efektem jest konieczność instalacji systemu operacyjnego na emulatorze. Emulatory pozwalają używać oprogramowania, do którego sprzęt może fizycznie już nie istnieje, bądź nie jest produkowany.
 	\item Wirtualizacja natywna (pełna wirtualizacja) - umożliwia uruchamianie systemu operacyjnego kompatybilnego z posiadanym systemem komputerowym i dokonuje wirtualizacji tylko części wywołań, potrzebnych do izolacji oprogramowania. Cała reszta jest przetwarzana przez fizyczny sprzęt, celem zwiększania wydajności wirtualizacji. Zwykle polega to na stworzeniu maszyny wirtualnej przechwytującej wszystkie wywołania, a następnie przekazywaniu wybranych instrukcji do systemu komputerowego. Przekazuje się przede wszystkim instrukcje wejścia/wyjścia i obsługi sieci.
 	\item Parawirtualizacja (hipernadzorca) - w tym przypadku oprogramowanie wirtualizujące nie tworzy iluzji sprzętu, a jedynie dostarcza programowe API, z którego mogą korzystać odpowiednio zmodyfikowane systemy operacyjne. Jest to alternatywa szczególnie dla architektury x86, która jest trudna do pełnego zwirtualizowania, co przyczynia się do zmniejszenia wydajności działania oprogramowania.
-	\item Wirtualizacja systemu operacyjnego - to podejście polega na dzieleniu jednej fizycznej maszyny na kilka wirtualnej opartych o bazowy system operacyjny. Wszystkie platformy muszą być tego samego typu, co gospodarz, ponieważ obsługa sprzętu jest dokonywana przez jego jądro. Dopuszczalne są jednakowoż inne dystrybucje. Ten rodzaj wirtualizacji pozwala ograniczyć utratę wydajności, bo nie wymaga żadnego tłumaczenia w trakcie działania systemu – wywołania systemów wirtualizowanych są identyczne z wywołaniami rzeczywistego. Wykorzystuje się to rozwiązania szczególnie do konsolidacji serwerów i w dostarczaniu prywatnych serwerów stron internetowych. 
+	\item Wirtualizacja systemu operacyjnego - to podejście polega na dzieleniu jednej fizycznej maszyny na kilka wirtualnej opartych o bazowy system operacyjny. Wszystkie platformy muszą być tego samego typu, co gospodarz, ponieważ obsługa sprzętu jest dokonywana przez jego jądro. Dopuszczalne są jednakowoż inne dystrybucje. Ten rodzaj wirtualizacji pozwala ograniczyć utratę wydajności, bo nie wymaga żadnego tłumaczenia w trakcie działania systemu – wywołania systemów wirtualizowanych są identyczne z wywołaniami rzeczywistego. Wykorzystuje się to rozwiązania szczególnie do konsolidacji serwerów i w dostarczaniu prywatnych serwerów stron internetowych.
 	\item Przy zachowaniu odpowiednich zasad to podejście jest bardzo podobne do opisanej w kolejnym podrozdziale konteneryzacji - różnią się jedynie mechanizmy wykorzystywane przez system operacyjny.
 \end{itemize}
 
@@ -337,12 +337,12 @@ To kryterium jest kluczowe dla pojęcia wirtualizacji. Instrukcje aplikacji powi
 	\item Symulacja sprzętu - maszyny wirtualne mogą z powodzeniem udawać sprzęt, którego fizycznie nie posiadamy i pozwalają prowadzić działalność w warunkach, którymi nie dysponujemy – od maszyn wieloprocesorowych, po sieci komputerowe.
 	\item Bezpieczne środowisko - dzięki izolacji, którą zapewnia maszyna wirtualna, możliwe jest zupełnie bezpieczne uruchamianie potencjalnie niebezpiecznego oprogramowania. Tyczy się to zarówno programów, co do których nie mamy zaufania, jak i specjalnie przygotowanych scenariuszy działania systemu operacyjnego, których efekty chcemy poznać. Poprzez niebezpieczne oprogramowanie mam tutaj na myśli, zarówno oprogramowanie wywołujące błędy mające wpływ na cały system operacyjny i jego destabilizację (np. błąd typu kernel panic), jak i na działające stabilnie aczkolwiek negatywnie wirusy czy trojany. W maszynach wirtualnych można bez obaw o środowisko hosta uruchamiać np. podejrzane załączniki z otrzymywanych wiadomości e-mail.
 	\item Emulowanie nieposiadanego systemu operacyjnego - dzięki maszynom wirtualnym możemy uruchamiać przestarzałe systemy operacyjne, które nie są już kompatybilne z posiadanym sprzętem. Podobnież przestarzałe lub obce oprogramowanie może być uruchamiane na nieobsługującym go sprzęcie lub systemie operacyjnym. Możliwe jest uruchamianie systemów operacyjnych projektowanych na inne architektury systemów niż ta na której uruchomiony jest host.
-	\item Środowiska wykonawcze dla języków programowania  - maszyny wirtualne dla Javy i .Net zapewniają możliwość uruchamiania oprogramowania na każdej (obsługiwanej) platformie. Jednocześnie kod jest wykonywany w ten sam sposób na każdym systemie operacyjnym. 
+	\item Środowiska wykonawcze dla języków programowania  - maszyny wirtualne dla Javy i .Net zapewniają możliwość uruchamiania oprogramowania na każdej (obsługiwanej) platformie. Jednocześnie kod jest wykonywany w ten sam sposób na każdym systemie operacyjnym.
 \end{itemize}
 
 \subsection{Problemy dotyczące wirtualizacji i maszyn wirtualnych}\indent \indent Jak opisano powyżej maszyny wirtualne zapewniają bardzo wysoki poziom izolacji, jednak mimo tego nie zawsze są wybierane jako rozwiązanie problemów dotyczących izolowania zadań na klastrach. Oto kilka przyczyn [20][21]:
 \begin{itemize}
-	\item Długi czas uruchomienia maszyny wirtualnej – czas ten jest stosunkowo długi, gdyż składa się na niego zwirtualizowanie zasobów, zarezerwowanie ich w systemie, inicjalizacja maszyny, a na samym końcu wykonanie całej procedury związanej z uruchomieniem systemu (takiej jak klasyczne uruchamianie systemu na fizycznej maszynie). 
+	\item Długi czas uruchomienia maszyny wirtualnej – czas ten jest stosunkowo długi, gdyż składa się na niego zwirtualizowanie zasobów, zarezerwowanie ich w systemie, inicjalizacja maszyny, a na samym końcu wykonanie całej procedury związanej z uruchomieniem systemu (takiej jak klasyczne uruchamianie systemu na fizycznej maszynie).
 	\item Poza drobnymi wyjątkami, nie jest możliwe zmienianie zasobów jakimi dysponuje maszyna wirtualna. Zmiana np. ilości procesorów przekazanych maszynie wirtualnej możliwa jest tylko gdy maszyna jest wyłączona. Z kolei jak wspomniano wyżej czas uruchamiania jest stosunkowo wysoki i przerwa w działaniu usługi może być nieakceptowalna przez klienta. Z tego powodu wymagane jest bardzo odpowiedzialne projektowanie całej infrastruktury w centrum danych, a także odpowiedzialne rozdzielenie zasobów między maszyny wirtualne.
 	\item Problem skalowania i klonowania maszyn wirtualnych – maszyny wirtualne jako byty „ciężkie” (długi czas startu, obrazy o dużych rozmiarach, ciągle zmieniające się wewnątrz procesy) są bardzo trudne do klonowania w czasie rzeczywistym. Ze względu na działające bez przerwy procesy wewnątrz maszyny wirtualnej skopiowanie maszyny i uruchomienie obok identycznej, jest bardzo trudne algorytmicznie i mało jest na rynku rozwiązań oferujących taki mechanizm.
 	\item Przeniesienie uruchomionej maszyny wirtualnej między fizycznymi serwerami. Jest wiele potencjalnych przyczyn, dla których może pojawić się konieczność przeniesienia działającej maszyny wirtualnej w inne miejsce w centrum danych. Najczęściej będzie to konieczność restartu, bądź wyłączenia fizycznej maszyny, np. w celach aktualizacji systemu bądź serwisu sprzętu. W takich sytuacjach należy dokonać procesu tzw. „Live migracji” maszyny wirtualnej. Polega on na niewidocznym dla użytkownika maszyny wirtualnej przeniesieniu jej na inną fizyczną maszynę. Cały proces jest bardzo kosztowny (zasoby, obciążenie sieci), więc możliwe jest wykonywanie tylko kilku migracji jednocześnie. Przy konieczności wyłączenia całej szafy z serwerami i migracji wszystkich umieszczonych tam maszyn wirtualnych, cały proces może zająć nawet kilka dni[15]
@@ -353,7 +353,7 @@ To kryterium jest kluczowe dla pojęcia wirtualizacji. Instrukcje aplikacji powi
 \indent \indent Konteneryzowanie aplikacji – jest to sposób upakowania i uruchomienia procesów na komputerze w sposób izolowany. System operacyjny za pomocą specjalnych mechanizmów (cgroups, systemd) wydziela część zasobów i przekazuje je do procesu kontenera. W odróżnieniu do wirtualizacji zasoby te nie są oddane maszynie wirtualnej na stałe, zaś ciągle biorą udział w procesach wywłaszczania i przydzielania innym procesom. W konteneryzacji jądro systemu jest współdzielone, a nie tak jak w wirtualizacji, uruchamiane kolejne. Te dwa elementy sprawiają, że uruchamianie kontenerów jest znacznie szybsze niż maszyn wirtualnych[22], a to z kolei eliminuje część ich problemów. Mówi się o konteneryzacji, że jest „lekka”, właśnie ze względu na szybki czas uruchamiania. Główną ideą stojącą za kontenerami, jest możliwość łatwego uruchamiania ich bardzo wielu jednocześnie (nawet na kilka instancji na jednym fizycznym serwerze). W ujęciu kontenerowym nie należy obawiać się problemów z jednym serwerem, gdyż w danej chwili mamy uruchomionych kilka takich samych na innych serwerach w centrum danych. Rozdzielaniem ruchu pomiędzy instancjami danego kontenera zajmują się usługi typu load balancer. Posiadają one wiedzę o miejscu oraz lokalizacji, w której uruchomione są kolejne instancje, dzięki czemu mogą dynamicznie rozdzielać ruch na te najmniej obciążone.
 
 \subsection{Standard opisujący konteneryzację}\indent \indent
-Pierwszą poważną i ciągle najbardziej rozpowszechnioną na rynku implementacją kontenerów jest Docker[23]. Swoje rozwiązanie firma Docker przygotowała w oparciu o własne pomysły, bez opisywania rozbudowanego standardu. Gdy na rynku zaczęły pojawiać się nowe rozwiązania kontenerowe poprawiono pewne architektoniczne błędy, które miał Docker [TODO: szyk zdania]. Doprowadziło to do sporych różnic między produktami i wprowadziło chaos na rynku. Szybki rozwój chmur obliczeniowych sprawił, że tematem konteneryzacji zaczęło interesować się wiele firm, znacząco w tym miejscu wyprzedzając naukowców. Pierwszą próbą stworzenia standardu kontenerów podjęła firma CoreOS, tworząc swój produkt appc/spec – github.com/apppc/spec. Na dzień dzisiejszy projekt jest w pełni rozwijany przez kontrybutorów z wielu różnych firm. 
+Pierwszą poważną i ciągle najbardziej rozpowszechnioną na rynku implementacją kontenerów jest Docker[23]. Swoje rozwiązanie firma Docker przygotowała w oparciu o własne pomysły, bez opisywania rozbudowanego standardu. Gdy na rynku zaczęły pojawiać się nowe rozwiązania kontenerowe poprawiono pewne architektoniczne błędy, które miał Docker [TODO: szyk zdania]. Doprowadziło to do sporych różnic między produktami i wprowadziło chaos na rynku. Szybki rozwój chmur obliczeniowych sprawił, że tematem konteneryzacji zaczęło interesować się wiele firm, znacząco w tym miejscu wyprzedzając naukowców. Pierwszą próbą stworzenia standardu kontenerów podjęła firma CoreOS, tworząc swój produkt appc/spec – github.com/apppc/spec. Na dzień dzisiejszy projekt jest w pełni rozwijany przez kontrybutorów z wielu różnych firm.
 
 \indent \indent W standardzie tym można znaleźć informacje na temat, czym jest skonteneryzowana aplikacja, jakie narzędzia powinny wchodzić w skład ekosystemu do konteneryzowania aplikacji, oraz w jaki sposób definiuje się obrazy kontenerów[24].
 
@@ -374,7 +374,7 @@ W maszynach wirtualnych obrazy to ogromne pliki, które zawierają w sobie infor
 	\item Udzielanie kontenerowi podwyższonych uprawnień – cześć operacji, które użytkownik chce wykonać w wewnątrz kontenera potrzebuje specjalnych uprawnień, szczególnie tam, gdzie chcemy dokonać komunikacji bądź zmiany z systemem hostem. Rozwiązania kontenerowe zazwyczaj pozwalają poprzez odpowiednie flagi udzielić kontenerowi odpowiednich uprawnień, tzn. przekazać do niego odpowiedni namespace. Przykładowo gdybyśmy chcieli w naszym kontenerze dodać nowe urządzenie sieciowe. Powinniśmy przekazać namespace sieciowy.
 	\item Błąd w jądrze systemu wpływa na cały system operacyjny hosta – jeśli w kontenerze dojdzie do błędu w jądrze systemu (ang. kernel panic) to cały system operacyjny hostujący kontenery zostanie zaafektowany. Jest to spowodowane wykorzystaniem kontenerach mechanizmu współdzielenia jądra systemu.
 	\item Rozwiązania izolacji zróżnicowane jakościowo w różnych rozwiązaniach kontenerowych – „lekkie” podejście do izolacji w kontenerach powoduje, że niektóre zadania mogą wpływać na system hosta. Chodzi tutaj o zadania, które bardzo szybko zajmują duże bloki pamięci.
-	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów[TODO big fail DOCKER]. Jednocześnie cały czas rozwijany jest standard opisujący konteneryzaję, co utrudnia osięgniecie w projektach kontenerowych wysokiej stabilności. 
+	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów[TODO big fail DOCKER]. Jednocześnie cały czas rozwijany jest standard opisujący konteneryzaję, co utrudnia osięgniecie w projektach kontenerowych wysokiej stabilności.
 \end{itemize}
 
 \newpage
@@ -403,7 +403,7 @@ Obecnie dokonano implementacji standardu MPI na wiele platform i języków progr
 	\item MSMPI – Microsoft MPI – Implementacja standardu MPI rozwijana przez korporację Microsoft. Jej głównymi założeniami jest wsparcie dla języka C\# i technologii .NET, a w szczególności uruchamianie sklastrowanych zapytań typu LINQ.
 \end{itemize}
 
-Podsumowując: MPI pozwala przy zastosowaniu odpowiednich standardów, osiągnąć bardzo wysoki poziom utylizacji klastra. Niestety wymaga to napisanie aplikacji w oparciu o ten standard, co z kolei prowadzi do wysokich kosztów jakie musi ponieść producent. MPI świetnie nadaje się do aplikacji w których wykonujemy zestaw trudno obliczeniowych działań, natomiast sama architektura aplikacji jest stosunkowo prosta. 
+Podsumowując: MPI pozwala przy zastosowaniu odpowiednich standardów, osiągnąć bardzo wysoki poziom utylizacji klastra. Niestety wymaga to napisanie aplikacji w oparciu o ten standard, co z kolei prowadzi do wysokich kosztów jakie musi ponieść producent. MPI świetnie nadaje się do aplikacji w których wykonujemy zestaw trudno obliczeniowych działań, natomiast sama architektura aplikacji jest stosunkowo prosta.
 
 Główną wadą podejścia MPI jest konieczność obsłużenia logiki klastra obliczeniowego w każdej napisanej aplikacji. Atrakcyjniejszym wydaje się podejście, w którym programista aplikacji będzie poziom wyżej, tzn. aplikacja zostanie wytworzona klasycznie, a odpowiednia mechanika zainstalowana na chmurze rozwiąże problem klastrowania.
 
@@ -418,7 +418,7 @@ Główną wadą podejścia MPI jest konieczność obsłużenia logiki klastra ob
 	\label{docker_logo}
 \end{figure}
 
-Doker do izolowania zasobów wykorzystuje mechanizmy cgroups oraz namespaces z Linuxowego jądra systemu. Problem montowania zasobów rozwiązuje za pomocą OverlayFS a ponadto umożliwia zmianę tego mechanizmu na AUFS (autorskie rozwiązanie firmy Docker). 
+Doker do izolowania zasobów wykorzystuje mechanizmy cgroups oraz namespaces z Linuxowego jądra systemu. Problem montowania zasobów rozwiązuje za pomocą OverlayFS a ponadto umożliwia zmianę tego mechanizmu na AUFS (autorskie rozwiązanie firmy Docker).
 
 Docker jest aplikacją, która dostarcza wiele różnorakich funkcji związanych z uruchamianiem, przetwarzaniem i budowaniem aplikacji. Jednakże sam mechanizm izolacji i uruchamiania kontenera realizowany jest przez osobne oprogramowanie (również rozwijane przez firmę docker). W pierwszych wersjach dockera tym rozwiązanie była biblioteka libcontainer, ale ze względu na wiele zmian architektonicznych oraz zainteresowanie firm zewnętrznych prace nad nim zostały porzucone a sam projekt zmienił nazwę na runc. Rozwiązaniem domyślnie stosowanym w dockerze jest właśnie biblioteka runc. Inne dostępne mechanizmy izolacji to libvirt, LXC (\textit{Linux Containers}) lub mechanizm systemd-nspawn.
 
@@ -435,7 +435,7 @@ Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Dock
 \caption{Ważniejsze polecenia w programie docker (dla wersji 1.13.1)}
 \label{docker_cli}
 \begin{tabular}{|p{3cm}|p{11cm}|}
-  \hline 
+  \hline
   \textbf{Polecenie} & \textbf{Opis oraz przykład}\\
   \hline
   docker attach & Podłączenie się do uruchomionego już kontenera, celem przechwycenia wyjścia z aplikacji uruchomionej w kontenerze. Kontener należy wskazać poprzez identyfikator lub nazwę (pole obowiązkowe). \newline docker attach world-community-grid \\
@@ -450,7 +450,7 @@ Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Dock
   docker create & Tworzy kontener na zasadzie identycznej jak docker run, z tą różnicą że kontener nie jest jeszcze uruchomiony i jego uruchomienie należy wykonać oddzielnie za pomocą docker start \newline docker create -t -i fedora bash \\
   \hline
   docker exec & Wykonuje podane polecenie we wskazanym kontenerze. Odpowiednie flagi decydują o lokalizacji wyjścia z podanego polecenia. \newline docker exec -it  world-community-grid bash \newline Uruchomi basha w kontenerze w sposób interaktywny. \\
-  \hline 
+  \hline
   docker images & Wyświetlanie listy obrazów pobranych i gotowych do użycia w systemie. \newline docker images –all \newline Wyświetlenie listy wszystkich obrazów znajdujących się na maszynie. \\
   \hline docker inspect & Wyświetlenie bardzo szczegółowych informacji na temat obrazu lub kontenera. \newline docker inspect  world-community-grid \\
   \hline docker ps & Wyświetlenie listy uruchomionych kontenerów. \newline docker ps -a \newline Wyświetli listę wszystkich kontenerów w systemie, nawet tych, które są zatrzymane bądź skończyły pracę. \\
@@ -459,11 +459,11 @@ Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Dock
   \hline docker rm & Usunięcie kontenera o wskazanej nazwie/ID \newline docker rm  world-community-grid \\
   \hline docker run & Stworzenie i uruchomienie kontera o określonych parametrach. \newline \newline docker run --restart=always -d --name wcg -e "boincurl=www.worldcommunitygrid.org" -e "boinckey=1033877\_ca3e3556f2fcafbb8edc82447e16b58c" rsmitty/boinc \newline Utworzy kontener z obrazu rsmitty/boinc (a jeśli taki nie jest obecny na dysku to docker podejmie próbę pobrania go). Do kontenera zostaną przekazane dwie zmienne środowiskowe i zostanie nadana mu nazwa world-community-grid.  \\
   \hline
-\end{tabular} 
+\end{tabular}
 \end{table}
 
  Nie trudno zauważyć, że w problemie konteneryzacji najważniejsze są dwa zagadnienia, tj. obsługa cyklu życia kontenera oraz zarządzanie obrazami. Obrazy dockerowe są trzymane w repozytoriach obrazów (ang. docker registry) a zarządzanie nimi odbywa się w sposób podobny do klasycznych repozytoriów kodu. W centrum danych można uruchomić takie repozytorium i przechowywać na nim obrazy. Dzięki temu zabiegowi wystarczy tylko raz zbudować obraz (co przy złożonych obrazach zajmuje wiele czasu) i po jego przesłaniu (polecenie docker push) można taki obraz pobrać (polecenie docker pull) na pozostałych serwerach w centrum danych.
- 
+
  Obrazy w dokerze opierają się na plikach Dockerfile. Są to pliki tekstowe, w których musi zostać uwzględniona notacja Dockera oraz przygotowane dla użytkownika dyrektywy. Najważniejsze z nich to \textit{FROM, RUN}, oraz \textit{CMD}:
 
 \begin{itemize}
@@ -519,9 +519,9 @@ Rkt (Rys. \ref{rkt_logo}) jest produktem sponsorowanym przez firmę CoreOS i jes
 Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wyraźne rozgraniczanie poszczególnych modułów systemów co umożliwia wprowadzenie warstwowej podmienialnej architektury całego rozwiązania. Na rysunku \ref{rkt_arch} przedstawiono architekturę tego rozwiązania (przy uruchomionym jednym podzie i dwóch kontenerach). I tak:
 
 \begin{itemize}
-\item stage0 - jest to poziom systemu operacyjnego i procesu samej aplikacji rkt. 
+\item stage0 - jest to poziom systemu operacyjnego i procesu samej aplikacji rkt.
 \item stage1 - jest to poziom poda, swego rodzaju baza dla dalszego uruchamiania kontenerów. Stage1 to bardzo mocno okrojony system plików, który umożliwia uruchamianie prostych aplikacji i ploleceń systemu operacyjnego. W tym miejscu uwidacznia się jedna z największych sił rozwiązania rkt. Stage pierwszy może być podmieniany (jest tak naprawdę obrazem systemu plików). W zależności od wskazanego obrazu określimy sposób w jaki rkt będzie dokonywał izolowania uruchomionych później kontenerów. Aktualnie wraz z rozwiązaniem dostarczanych jest pięć obrazów, które mogą być tutaj wykorzystane (tabela \ref{rkt_flavors}).
-\item stage2 - jest to poziom aplikacji uruchomionej w kontenerze. Wskazany obraz zostaje uruchomiony za pomocą odpowiedniego \textit{hypervizora}. 
+\item stage2 - jest to poziom aplikacji uruchomionej w kontenerze. Wskazany obraz zostaje uruchomiony za pomocą odpowiedniego \textit{hypervizora}.
 \end{itemize}
 
 \begin{table}[!htbp]
@@ -530,7 +530,7 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 \centering
 
 \begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
-  \hline 
+  \hline
   \textbf{Nazwa rozwiązania} & \textbf{Wykorzystywany mechanizm izolacji} & \textbf{Opis mechanizmu izolacji}\\
   \hline
   Fly & System plików i polecenie chroot & Ten mechanizm izolacji polega na skopiowaniu zawartości obrazu do innej lokalizacji a następnie wykonaniu tam polecenia chroot. W tym podejściu nie istnieje w zasadzie izolacja procesów uruchomionych w kontenerze. Będą one interferowały inne aplikacje uruchomione w systemie operacyjnym. Jedynym zystkiem z tej izolacji uniemożliwieniu użytkownikowi wyjście poza kontener (ucieczka do systemu gospodarza). \\
@@ -543,7 +543,7 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
   \hline
   XEN & Wirtualizacja XEN & Zewnętrzni klienci produktu rkt aby wypromować swoje rozwiązanie przygotowali stage1 oparty na wirtualizacji XEN. Na dzień pisania tej pracy projekt jest w fazie rozwojowej i nie jest używalny produkcyjnie. \\
   \hline
-\end{tabular} 
+\end{tabular}
 \end{table}
 
 \chapter{Wprowadzenie do systemów wieloagentowych}
@@ -563,14 +563,14 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 \bibitem{ad2}Linthicum D., \textit{How to integrate with the cloud}, InfoWorld: Cloud Computing, April 27, 2011.
 \bibitem{ad3}Kozyrakis Ch., \textit{Resource Efficient Computing for Warehouse-scale Datacenters}, 2013, Stanford University.
 \bibitem{ad4}Carlson N., \textit{At Last — The Full Story Of How Facebook Was Founded}, Business Insider.
-\bibitem{ad5}Data Center Knowledge blog [online].[dostęp 26.03.2017]. Dostępny w Internecie: http://www.datacenterknowledge.com/the-facebook-data-center-faq/ 
+\bibitem{ad5}Data Center Knowledge blog [online].[dostęp 26.03.2017]. Dostępny w Internecie: http://www.datacenterknowledge.com/the-facebook-data-center-faq/
 \bibitem{ad6}"Chip",\textit{Internet jest chmurą}, 03/2009, s. 38. Warszawa: Burda Communications sp. z o.o.. ISSN 1230-817X.
 \bibitem{ad7}Trojnar D.,\textit{Wirtualizacja jako przyszłość sieci teleinformatycznych}, W: SECON 2010 – Materiały konferencyjne. Warszawa: WAT, 2010.
 \bibitem{ad8}Levinson M., \textit{Software as a Service (SaaS) Definition and Solutions}.
 \bibitem{ad9}Boniface, M., \textit{Platform-as-a-Service Architecture for Real-Time Quality of Service Management in Clouds}, 5th International Conference on Internet and Web Applications and Services (ICIW), Barcelona, Spain: IEEE, pp. 155–160, doi:10.1109/ICIW.2010.91
 \bibitem{ad10}Mell P., Grence T., \textit{The NIST Definition of Cloud Computing (Technical report)}, MNational Institute of Standards and Technology: U.S. Department of Commerce. doi:10.6028/NIST.SP.800-145. Special publication 800-145.
 \bibitem{ad11}Rouse M.,\textit{What is public cloud?}, Definition from Whatis.com.
-\bibitem{ad12}Bernstein D., Ludvigson E., Sankar K., Diamond S., Morrow M., \textit{Blueprint for the Intercloud – Protocols and Formats for Cloud Computing Interoperability}, IEEE Computer Society: 328–336. doi:10.1109/ICIW.2009.55. ISBN 978-1-4244-3851-8. 
+\bibitem{ad12}Bernstein D., Ludvigson E., Sankar K., Diamond S., Morrow M., \textit{Blueprint for the Intercloud – Protocols and Formats for Cloud Computing Interoperability}, IEEE Computer Society: 328–336. doi:10.1109/ICIW.2009.55. ISBN 978-1-4244-3851-8.
 \bibitem{ad13}Krause S.,\textit{The private vs public cloud debate: Which to deploy, and why consider hybrid?}, cloudcomputing news.
 \bibitem{ad14}Freedman R., \textit{Cloud computing migration issues: What you need to know} [online].[dostęp 14.04.2017]. Dostępny w Internecie: http://www.techrepublic.com/blog/it-consultant/cloud-computing-migration-issues-what-you-need-to-know/.
 \bibitem{ad15}Krasuski T., Łoś J., Szostakiewicz M.,\textit{Wstęp do wirtualizacji}, Uniwersytet Warszawski, 2005.
