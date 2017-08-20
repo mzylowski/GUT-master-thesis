@@ -365,7 +365,6 @@ Pierwszą poważną i ciągle najbardziej rozpowszechnioną na rynku implementac
 	\item Otwarty – rozwiązanie powinno być rozwijane jako wolne oprogramowanie, tak by zapewnić jasność i wysoki poziom bezpieczeństwa.
 \end{itemize}
 
-\subsection{Standard opisujący konteneryzację}\indent \indent
 W maszynach wirtualnych obrazy to ogromne pliki, które zawierają w sobie informacje o parametrach maszyny, oraz zrzut danych z dysku twardego maszyny, bit po bicie. Kontenery jako rozwiązanie szybkie wspierają całkowicie inne podejście[25]. Każdy obraz opisany jest odpowiednim manifestem, który opisuje (z wykorzystaniem odpowiedniej notacji) zawartość obrazu. Manifest taki jest plikiem tekstowym w którym linia po linii wypisane są kolejne polecenia, które należy wykonać na obrazie wskazanym jako bazowy. Aby uruchomić skonteneryzowaną aplikację na jakimś komputerze, należy jedynie dostarczyć tam mały plik tekstowy, po czym za pomocą odpowiedniego polecenia zbudować gotowy obraz. Następnie taki obraz możemy wskazać do uruchomienia, dzięki czemu zbudowana lista aplikacji zostanie wystartowana, oraz odizolowana od reszty akcji w systemie.
 
 \subsection{Wady kontneryzacji}\indent \indent Główna siła napędowa kontenerów – współdzielone jądro systemu i ‘lekka’ izolacja, jest jedocześnie przyczyną problemów pojawiających się rozwiązaniach kontenerowych. Oto niektóre z nich[26]:
@@ -546,7 +545,34 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 \end{tabular}
 \end{table}
 
-\chapter{Wprowadzenie do systemów wieloagentowych}
+
+\newpage
+%TODO
+\section{Orkiestratory zadań}
+
+\subsection{Apach Mesos}
+
+Produkt \textit{open source} przeznaczony do instalacji w centrum danych oferujący możliwość uruchamiania zadań na zadanych zasobach. Rozwijany początkowo na Uniwerystecie w Berkeley. Pierwsza prezentacja Mesosa miała miejsce w 2009 roku podczas konferencji \textit{HotCloud}. Projektem zainteresowała się fundacja Apache, która do dnia dzisiejszego zajmuje się rozwojem produktu. W Lipcu 2016 została wydana wersja 1.0 Mesosa (przeskok z wersji 0.26). Na ten krok zdecydowano się po zaimplementowaniu wielu dodatkowych funkcji, po dołączeniu do projektu firmy Mesosphera. Tak przygotowany produkt firma Mesosphera zaczęła rozprowadzać pod swoim logo jako kompleny produkt pozwalający osiągnąć wysoką utylizację centrum danych. Mowa tutaj o produkcie DC/OS \textit{Data Center Operating System}. 
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=1]{pics/apache_mesos_logo.png}
+	\caption{Logo projektu Apache Mesos}
+	\label{mesos_logo}
+\end{figure}
+
+Mesos architektonicznie jest projektem, który zbiera zasoby ze wszystkich komputerów na których jest uruchomiony i przedstawia ją jako zunifikowaną pulę. Następnie pula ta może być użyta do uruchomienia zadań. Do zebranych zasobów należy się odwołać używając bądź implementując własny \textit{framework}. W tym miejscu uwidacznia się siła rozwiązania, ponieważ niewielkim wysiłkiem można zaprojektować swoje własne rozwiązanie, które będzie efektywnie rozdzielało zadania do wykonania. Umożliwia to specjalne programowe API, które wystawia Mesos.
+
+Mesos początkowo wszystkie zadania uruchamiał jako kolejne procesy na wybranej do egzekucji maszynie. To podejście było bardzo prostą izolacją, która dopiero później była dalej rozwijana. Również procesy odpowiedzialne za działanie Mesosa były uruchamiane jako zwykłe procesy, tak więc zadanie uruchomione w Mesosie mogło w skrajnej sytuacji interferować nawet proces samego kontrolera klastra. Popoularność rozwiązania Docker sprawiła, że do Mesosa dodano możliwość uruchomienia skonteneryzowanych aplikacji. Dodatkowo zaleca się uruchomienie poszczególnych procesów dockera w osobnych kontenerach, w ten sposób wszystkie uruchomione zadania są od siebie izolowane i nie interferują procesów samego Mesosa.
+
+Na dzień pisania tej pracy Mesos posiada tylko eksperymentalne wsparcie dla kontenerów \textit{appc}. Nie jest możliwe uruchamianie wielu kontenerów w jednym podzie, a samo wspracie dla rkt nie jest stabilne. Przyczyną tego stanu rzeczy jest niechęć firmy Mesosphera do wspierania produktu konkurencyjnego dla Dokera i prawdopodobnie tak długo jak rkt nie zdobędzie większej popularności, tak długo Mesos nie będzie posiadał produkcyjnego wsparcia dla wszystkich mechanizmów, które oferuje rkt.
+
+Architektura Mesosa oraz istniejące na rynku \textit{frameworki} zostały opisane w kolejnym rozdziale tej pracy. 
+
+\subsection{Kubernetes}
+
+
+\chapter{Nowy rozdział...}
 \newpage
 
 \listoffigures
