@@ -552,7 +552,7 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 
 \subsection{Apach Mesos}
 
-Produkt \textit{open source} przeznaczony do instalacji w centrum danych oferujący możliwość uruchamiania zadań na zadanych zasobach. Rozwijany początkowo na Uniwerystecie w Berkeley. Pierwsza prezentacja Mesosa miała miejsce w 2009 roku podczas konferencji \textit{HotCloud}. Projektem zainteresowała się fundacja Apache, która do dnia dzisiejszego zajmuje się rozwojem produktu. W Lipcu 2016 została wydana wersja 1.0 Mesosa (przeskok z wersji 0.26). Na ten krok zdecydowano się po zaimplementowaniu wielu dodatkowych funkcji, po dołączeniu do projektu firmy Mesosphera. Tak przygotowany produkt firma Mesosphera zaczęła rozprowadzać pod swoim logo jako kompleny produkt pozwalający osiągnąć wysoką utylizację centrum danych. Mowa tutaj o produkcie DC/OS \textit{Data Center Operating System}. 
+Produkt \ref{mesos_logo} \textit{open source} przeznaczony do instalacji w centrum danych oferujący możliwość uruchamiania zadań na zadanych zasobach. Rozwijany początkowo na Uniwerystecie w Berkeley. Pierwsza prezentacja Mesosa miała miejsce w 2009 roku podczas konferencji \textit{HotCloud}. Projektem zainteresowała się fundacja Apache, która do dnia dzisiejszego zajmuje się rozwojem produktu. W Lipcu 2016 została wydana wersja 1.0 Mesosa (przeskok z wersji 0.26). Na ten krok zdecydowano się po zaimplementowaniu wielu dodatkowych funkcji, po dołączeniu do projektu firmy Mesosphera. Tak przygotowany produkt firma Mesosphera zaczęła rozprowadzać pod swoim logo jako kompleny produkt pozwalający osiągnąć wysoką utylizację centrum danych. Mowa tutaj o produkcie DC/OS \textit{Data Center Operating System}. 
 
 \begin{figure}[!h]
 	\centering
@@ -571,6 +571,34 @@ Architektura Mesosa oraz istniejące na rynku \textit{frameworki} zostały opisa
 
 \subsection{Kubernetes}
 
+Kubernetes (rys. \ref{kube_logo}) - znacznie młodsza konkurencja rozwiązania Mesos (po raz pierwszy ogłoszony publicznie w połowie roku 2014). Sponsorowany i rozwijany jako wolne oprogramowanie przez korporację Google. Rozwiązanie od samego początku oparte było o kontenery Dockera. Nigdy nie powstała możliwość uruchamiania pojedyńczych procesów w systemie operacyjnym (tak jak w Mesosie). Kubernetes jako rozwiązanie młode często wprowadza zmiany architektoniczne i nowe możliwości. Jego niedojrzałość powoduje, że trzeba włożyć więcej pracy w aktualizacje klastra i zapewnienie stabilności. Przykładem zmiany, która doprowadziła do takich problemów może być mechanizm CRI \textit{Container Runtime Interface}. Ze względu na pojawiające się konkurencyjne do Dokera rozwiązania kontenerowe (rkt, OCI) w kubernetesie zaprojektowano mechanizm CRI. Jest to programowe API działające po specjalnie przygotowanej przez Google implementacji protokołu RPC - GRPC. Dany \textit{runtime} kontenerowy musi implementować to API by porozumiewać się z kubernetesem. Rozwiązania kontenerowe zaprojektowały swoje odzielne procesy, których celem była komunikacja po interfejsie CRI. Dla rkt jest to proces \textit{rktlet} a dla Dockera \textit{docker-shim}. Zainstalowanie wersji 1.6 wymagało również aktualizację konteneryzatora, a to wymagało wyłączenia bądź przemigrowania usług działających na danym komputerze w klastrze. Porównanie architektury kubernetesa 1.5 z 1.6 przedstawiono odpowiednie na rysunkach \ref{k8s_1_5} i \ref{k8s_1_6}.
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=1]{pics/Kubernetes-logo.png}
+	\caption{Logo projektu Kubernetes}
+	\label{kube_logo}
+\end{figure}
+
+Architektonicznie \ref{k8s_1_6} kubernetes jest mocno złożoną aplikacją. Poszczególne elementy aplikacji zostały porozdzielane na osobne usługi a nie jak w przypadku Mesosa zamknięte niemal w dwóch usługach. Wyróżnić należy szczególnie proces \textit{kubelet}, który jest sercem całego rozwiązania. Każdy komputer na którym uruchomiony jest proces kubeleta należy do klastra kubernetesa. Jest to jedny proces, który należy uruchomić z poziomu systemd. Wszystkie inne potrzebne procesy zostaną uruchomione jako byty kubernetesa (jako kontenery). Sam kubelet również może być uruchomiony w kontenerze, co jest domyślnym ustawieniem gdy klaster jest instalowany z narzędzia Kargo. 
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.7]{pics/k8s_1_5.png}
+	\caption{Architektura projektu Kubernetes w wersji 1.5}
+	\label{k8s_1_5}
+\end{figure}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.7]{pics/k8s_1_6.png}
+	\caption{Architektura projektu Kubernetes w wersji 1.6. Widoczne są zmiany związne z dodaniem interfejsu CRI.}
+	\label{k8s_1_6}
+\end{figure}
+
+Usługi w stosie architektonicznym kubernetesa komunikują się za pomocą protokołu GRPC. Wyjątkiem jest jedynie aplikacja \textit{kubectl}, która to komunikuje się z klastem za pomocą technologi REST API. \textit{Kubectl} jest programem pozwalającym komunikować się i zarządzać klastrem z poziomu konsoli \textit{bash}.
+
+Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra potrzebne są inne procesy:
 
 \chapter{Nowy rozdział...}
 \newpage
