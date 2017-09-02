@@ -580,7 +580,7 @@ Kubernetes (rys. \ref{kube_logo}) - znacznie młodsza konkurencja rozwiązania M
 	\label{kube_logo}
 \end{figure}
 
-Architektonicznie \ref{k8s_1_6} kubernetes jest mocno złożoną aplikacją. Poszczególne elementy aplikacji zostały porozdzielane na osobne usługi a nie jak w przypadku Mesosa zamknięte niemal w dwóch usługach. Wyróżnić należy szczególnie proces \textit{kubelet}, który jest sercem całego rozwiązania. Każdy komputer na którym uruchomiony jest proces kubeleta należy do klastra kubernetesa. Jest to jedny proces, który należy uruchomić z poziomu systemd. Wszystkie inne potrzebne procesy zostaną uruchomione jako byty kubernetesa (jako kontenery). Sam kubelet również może być uruchomiony w kontenerze, co jest domyślnym ustawieniem gdy klaster jest instalowany z narzędzia Kargo. 
+Architektonicznie (Rys. \ref{k8s_1_6}) kubernetes jest mocno złożoną aplikacją. Poszczególne elementy aplikacji zostały porozdzielane na osobne usługi a nie jak w przypadku Mesosa zamknięte niemal w dwóch usługach. Wyróżnić należy szczególnie proces \textit{kubelet}, który jest sercem całego rozwiązania. Każdy komputer na którym uruchomiony jest proces kubeleta należy do klastra kubernetesa. Jest to jedny proces, który należy uruchomić z poziomu systemd. Wszystkie inne potrzebne procesy zostaną uruchomione jako byty kubernetesa (jako kontenery). Sam kubelet również może być uruchomiony w kontenerze, co jest domyślnym ustawieniem gdy klaster jest instalowany z narzędzia TODO!!!. 
 
 \begin{figure}[!h]
 	\centering
@@ -598,7 +598,22 @@ Architektonicznie \ref{k8s_1_6} kubernetes jest mocno złożoną aplikacją. Pos
 
 Usługi w stosie architektonicznym kubernetesa komunikują się za pomocą protokołu GRPC. Wyjątkiem jest jedynie aplikacja \textit{kubectl}, która to komunikuje się z klastem za pomocą technologi REST API. \textit{Kubectl} jest programem pozwalającym komunikować się i zarządzać klastrem z poziomu konsoli \textit{bash}.
 
-Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra potrzebne są inne procesy:
+Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra potrzebne są inne procesy (Rys. \ref{k8s_1_6}, \ref{k8s_1_5}):
+\begin{itemize}
+\item Kube-apiserver - Aplikacja, która pośredniczy między klastrem a użytkownikiem. Potrafi komunikować się z innymi procesami w klastrze za pomocą protokołu GRPC jednocześnie wystawiając HTTP REST API, dzięki któremu aplikacje takie jak kubectl są w stanie łączyć się z klastrem i wykonywać na nim polecenia. Korzystając w tym miejscu z protkołu HTTPS skorzystano ze wszystkich dobrodziejstw tego protokołu - szyfrowanie, połączenia w oparciu o certyfikaty czy klucze. Umożliwia to łatwe zarządzanie uprawnieniami - użytkownikowi, który powinien posiadać możliwość zarządzania klastrem, należy dostarczyć odpowiedni certyfikat.
+\item Kube-dashboard (Rys. \ref{k8s_dash}) - jest to opcjonalna aplikacja, która może zostać zainstalowana wraz z klastrem. Umożliwia ona zarządzanie klastrem z wykorzystaniem przeglądarki internetowej. Oferuje znacznie mniej możliwości niż kubectl, natomiast dobrze nadaje się do zastosowań monitoringu czy też uruchamiania zadań przez niedoświadczonych użytkowników. Kube-dashboard również komunikuje się z klastrem wykorzystując API uruchomione przez kube-apiserver.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.17]{pics/kubedash.png}
+	\caption{Zrzut ekranu z aplikacji kube-dashboard.}
+	\label{k8s_dash}
+\end{figure}
+\item Etcd - jest to baza danych, która jest wykorzystywana przez klaster kubernetesa do przechowywania informacji na temat stanu klastra. Etcd jest projektem rozwijanym niezależnie od kubernetesa przez firmę CoreOS. Jest to nie relacyjna baza danych, która dane przechowuje w postaci: klucz - wartość. Etcd posiada możliwość sklastrowania swoich uruchomionych instancji, co zapewnia bezpieczeńtwo i niezawodność w przypadku awarii jednego z komputerów w klastrze.
+\item Kube-scheduler - proces, który odpowiedzialny jest za rozkładanie zadań pomiędzy poszczególne komputery klastra. Aplikacja tylko w niewielkim stopniu jest konfigurowalna, zaś sam algorytm rozdzielania zadań jest zamknięty wewnątrz aplikacji i nie ma możliwości dostosowania go do własnych potrzeb. Kube-scheduler decyzję o kolejkowaniu zadań na poszczególne komputery w klastrze oprze o tak zwane etykiety ang. \textit{labels}. Etykiety są opcjonalnym mechanizmem. Pozwalają one grupować poszczególe komputery klastra. Przykładowo komputery z dużą ilością dysków twardych mogą być oznaczone odpowiednią etykietą. Następnie uruchamiając zadanie, które wymaga wygenerowania dużej ilości danych, poprzez odpowiednią etykietę, może być skierowane właśnie na taki komputer. Do problemu rozdzielania zadań, wrócę jeszcze w kolejnym rozdziale, gdzie zostaną porównane możliwości Kubernetesa i Mesosa.
+\item Kube-dns - odpowiedzialny jest za komunikację sieciową z zewnątrz klastra do aplikacji uruchomionych wewnątrz. Mechanizm ten umożliwia uruchamianie na klastrze serwisów, które mają być dostępne z zewnątrz (np. strony internetowe, bazy danych). Do komunikacji wewnętrznej w klastrze wykorzystywane są plug-in'y sieciowe, które nie będą szczegółowo opisywane w tej pracy.
+\end{itemize}
+
+
 
 \chapter{Nowy rozdział...}
 \newpage
