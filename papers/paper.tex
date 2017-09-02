@@ -580,7 +580,7 @@ Kubernetes (rys. \ref{kube_logo}) - znacznie młodsza konkurencja rozwiązania M
 	\label{kube_logo}
 \end{figure}
 
-Architektonicznie (Rys. \ref{k8s_1_6}) kubernetes jest mocno złożoną aplikacją. Poszczególne elementy aplikacji zostały porozdzielane na osobne usługi a nie jak w przypadku Mesosa zamknięte niemal w dwóch usługach. Wyróżnić należy szczególnie proces \textit{kubelet}, który jest sercem całego rozwiązania. Każdy komputer na którym uruchomiony jest proces kubeleta należy do klastra kubernetesa. Jest to jedny proces, który należy uruchomić z poziomu systemd. Wszystkie inne potrzebne procesy zostaną uruchomione jako byty kubernetesa (jako kontenery). Sam kubelet również może być uruchomiony w kontenerze, co jest domyślnym ustawieniem gdy klaster jest instalowany z narzędzia TODO!!!. 
+Architektonicznie (Rys. \ref{k8s_1_6}) kubernetes jest mocno złożoną aplikacją. Poszczególne elementy aplikacji zostały porozdzielane na osobne usługi a nie jak w przypadku Mesosa zamknięte niemal w dwóch usługach. Wyróżnić należy szczególnie proces \textit{kubelet}, który jest sercem całego rozwiązania. Każdy komputer na którym uruchomiony jest proces kubeleta należy do klastra kubernetesa. Jest to jedny proces, który należy uruchomić z poziomu systemd. Wszystkie inne potrzebne procesy zostaną uruchomione jako byty kubernetesa (jako kontenery). Sam kubelet również może być uruchomiony w kontenerze, co jest domyślnym ustawieniem gdy klaster jest instalowany z narzędzia \textit{kubespray}. 
 
 \begin{figure}[!h]
 	\centering
@@ -613,7 +613,63 @@ Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra 
 \item Kube-dns - odpowiedzialny jest za komunikację sieciową z zewnątrz klastra do aplikacji uruchomionych wewnątrz. Mechanizm ten umożliwia uruchamianie na klastrze serwisów, które mają być dostępne z zewnątrz (np. strony internetowe, bazy danych). Do komunikacji wewnętrznej w klastrze wykorzystywane są plug-in'y sieciowe, które nie będą szczegółowo opisywane w tej pracy.
 \end{itemize}
 
+\chapter{Analiza rozwiązania Mesos oraz przegląd systemów szeregowania zadań}
+\newpage
 
+\section{Architektura rozwiązania Mesos}
+
+Mesos (Rys. \ref{mesos_logo}) zaprojektowany jest w oparciu o dwie aplikacje napisane w języku C++. Są to \textit{mesos-master} i \textit{mesos-agent}. Zasoby każdego komputera, na którym zostanie uruchomiona aplikacja \textit{mesos-agent} zostaną zaraportowane do uruchomionej na innym komputerze aplikacji \textit{mesos-master}. Master pozwala uruchamiać zadania na zadanej puli poprzez wystawienie programowego API. API to musi zostać zaimplementowane przez aplikację \textit{framework}, która uzyska możliwość uruchamiania zadań na puli zasobów mastera. Jednocześnie implementując \textit{framework} implementuje się sposób rozdzielania zadań na klastrze, dlatego właśnie w kontekście Mesos'a określenie \textit{framework} stosuje się wymienie ze słowem \textit{scheduler}. Warto tutaj zaznaczyć, że do uruchomienia Mesosa wystarczy nawet jeden komputer. Master i Agent mogą koegzystować na jednym komputerze. Uruchomienie jednego frameworka jest wystarczające do uruchamiania zadań. 
+
+\textit{Schedulerów} do Mesos'a dostępnych jest sporo, więc często nie ma konieczności implementowania własnego rozwiązania. Wiele projektów związanych z chmurami obliczeniowymi przygotowywało własne \textit{frameworki}, tak aby zachęcić właścicieli infrastrutury do łatwej integracji obecnych rozwiązań z Mesosem.
+
+\subsection{Cykl życia zadania}
+
+Przebieg zadania w klastrze Mesos'a prezentuje się następująco:
+\begin{enumerate}
+\item Użytkownik klastra zleca zadanie do wykonania. Zlecenie następuje poprzez \textit{frameworki} zarejestrowany w Mesosie. 
+\item Zadanie zostaje przekazane do procesu \textit{mesos-master} wraz z informacją na którym komputerze klastra zadanie ma zostać uruchomione.
+\item Master przekazuje wszystkie informacje do procesu \textit{mesos-agent} na odpowiednim komputerze.
+\item Aplikacja \textit{mesos-agent} uruchamia komponent \textit{mesos-egzecutor}, który odpowiedzialny jest za uruchomienie zadania. 
+\item \textit{Mesos-egzecutor} przed uruchomieniem zadania wykonuje szereg czynności, takich jak rezerwacja zasobów, pobranie wskazanych w zadaniu elementów itd.
+\item Gdy cała przestrzeń do wykonania zadania jest przygotowana, zostaje uruchomiony właściwy proces. 
+\item Przez cały czas trwania zadania występuje wymiana informacji między aplikacjimi \textit{mesos-agent}, \textit{mesos-master} i \textit{schedulerem}. Zostaje również zaktualizowana informacja na temat dostępnych zasobów.
+\item Zadanie kończy się, a zasoby po zadaniu zostają zwolnione.
+\end{enumerate}
+
+\subsection{Tryb wysokiej dostępności}
+Mesos przygotowany jest działania w trybie HA (ang. \textit{High Availability}). Pojawia się tutaj kolejna aplikacja która musi zostać zainstalowana na klastrze. Jest nią \textit{Zookeeper}. \textit{Zookeeper} jest odpowiedzialny, za przechowywanie informacji o położeniu wszystkich \textit{masterów} w klastrze. Dodatkowo sam \textit{Zookeeper} jest uruchomiony na wielu komputerach klastra, tak aby informacje o masterach były powielane na wielu komputerach. Niektóre frameworki dostępne na rynku uruchamiają się również w trybie HA, podobnie jak master wykorzystując mechanizm \textit{Zookeepera}. W przypadku konfiguracji wielu masterów zawsze tylko jeden jest liderem, zaś pozostałe są instancjami "awaryjnymi". 
+
+W przypadku braku komunikacji z aktualnym liderem klastra:
+\begin{enumerate}
+\item Zookeeper tworzy listę wszystkich masterów podłączonych w klastrze.
+\item Następuje wybór nowego lidra klastra.
+\item Informacja o nowym liderze przesyłana jest do wszystkich masterów.
+\item Wszystkie instancje frameworków i agentów na klastrze raportują swój stan, tak aby wszystkie zdarzenia przez nieobecność mastera, zostały odpowiednio przetworzone i zalogowane.
+\item Nowy lider przejmuje kontrolę nad klastrem.
+\end{enumerate}
+
+Architekturę trybu HA przedstawiono na rys. (\ref{mesos-ha-arch}). Jest to przykładowy klaster, na którym działają 3 agenty (\textit{slaves}) oraz trzy komputery pełniące rolę mastera, wraz z zainstalowanym na nim \textit{zookeeperem}. 
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.5]{pics/mesos-ha-arch.png}
+	\caption{Klaster Mesos'a w trybie wysokiej dostępności.}
+	\label{mesos-ha-arch}
+\end{figure}
+
+\subsection{Rozszerzalność Mesosa poprzez moduły}
+
+Podobnie jak w przypadku \textit{frameworków}, Mesos wystawia programowe API, które umożliwia napisanie własnych modułów i podłączenie ich do klastra. Moduły mogą być używane zarówno z masterami jak i agentami. Rodzaje wspieranych w Mesosie modułów:
+
+\begin{itemize}
+\item Alokatory - pozwalają na zaimplementowanie zaawansowanych algorytmów przydzielania zasobów poszczególnym zadaniom. Przykładowo, można zaimplementować tutaj alokowanie pamięci z rożnych kości RAM, czy też używania dla poszczególnych zadań innych rodzajów dysków. Np. zadania wymagające przechowywania danych można uruchamiać na dyskach NVMe, zaś zadania obliczeniowe, które w niewielkim stopniu korzystają z dysku twardego, można uruchomić na przestrzeni dysku SATA.
+\item Moduły anonimowe - nie są związane, z żadną dodatkową funkcjonalnością. Służą do uruchamiania własnego kodu przez procesy Mesos'a. Przykładowym modułem może tutaj być moduł do logowania lub monitorowania klastra.
+\item Autentykatory - pozwalają na zaimplementowania systemu autentykacji na klastrze. System taki może wykorzystać mechanizmy takie jak LDAP czy NIS, bądź też oprzeć się całkowicie na własnym rozwiązaniu i trzymać dane użytkowników w bazie danych MySQL lub w szyfrowanych plikach.
+\item Wyzwalacze (ang. \textit{Hooks}) - umożliwiają wykonywanie własnych dodatkowych akcji, po wykryciu danego zdarzenia. Przykładowo można tutaj zaprogramować mechanizm wysyłający wiadomości \textit{e-mail} po każdym uruchomionym zadaniu.
+\item Izolatory - pozwalają na zaimplementowanie systemów związanych z izolowaniem zadań od siebie, czy też reagowania na sytuacje w których jedno zadanie jest interferowane przez drugie. Przykładem może być implementacja mechanizmu pozwalającego na migrowanie zadań z maszyn, na których zaczyna brakować zasobów z powodu innego trudnego obliczeniowo problemu.
+\item Moduły elekcyjne - pozwalają zaimplementować własny mechanizm wybierania lidera po rozłączeniu poprzedniego. Można tutaj wykorzystać inną bazę danych niż tą oferowaną przez \textit{Zookeeper'a}, np. \text{ETCD}.
+\end{itemize}
+TODO: skróty na stronie ze skrótami: NVMe, SATA, LDAP, NIS, RAM, MySQL
+TODO: Instalacja klastra, porównanie z kubernetesem. , frameworki, 
 
 \chapter{Nowy rozdział...}
 \newpage
@@ -647,6 +703,7 @@ Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra 
 ....
 https://github.com/rkt/rkt/pull/2952
 https://github.com/rkt/rkt/issues/3019#issuecomment-246637570
+http://mesos.apache.org/documentation/latest/modules/
 \end{comment}
 
 
