@@ -1,0 +1,69 @@
+{
+    "id": "/product/service/my-app",
+    "cmd": "env && sleep 300",
+    "cpus": 1.5,
+    "mem": 256.0,
+    "instances": 3,
+    "container": {
+        "type": "DOCKER",
+        "docker": {
+            "image": "busybox",
+            "network": "BRIDGE",
+            "privileged": false
+        },
+    },
+    "constraints": [
+        ["attribute", "OPERATOR", "value"]
+    ],
+    "labels": {
+        "environment": "staging"
+    },
+    "fetch": [
+        { "uri": 
+	"https://raw.github.com/mesosphere/marathon/master/README.md" },
+        { "uri": 
+	"https://foo.com/archive.zip", "executable": false, 
+	"extract": true }
+    ],
+    "healthChecks": [
+        {
+            "protocol": "HTTP",
+            "path": "/health",
+            "gracePeriodSeconds": 3,
+            "intervalSeconds": 10,
+            "portIndex": 0,
+            "timeoutSeconds": 10,
+            "maxConsecutiveFailures": 3
+        },
+        {
+            "protocol": "HTTPS",
+            "path": "/machinehealth",
+            "gracePeriodSeconds": 3,
+            "intervalSeconds": 10,
+            "port": 3333,
+            "timeoutSeconds": 10,
+            "maxConsecutiveFailures": 3
+        },
+        {
+            "protocol": "TCP",
+            "gracePeriodSeconds": 3,
+            "intervalSeconds": 5,
+            "portIndex": 1,
+            "timeoutSeconds": 5,
+            "maxConsecutiveFailures": 3
+        },
+        {
+            "protocol": "COMMAND",
+            "command": { "value": "curl -f -X GET http://$HOST:$PORT0/health" },
+            "maxConsecutiveFailures": 3
+        }
+    ],
+    "backoffSeconds": 1,
+    "backoffFactor": 1.15,
+    "maxLaunchDelaySeconds": 3600,
+    "taskKillGracePeriodSeconds": 2,
+    "upgradeStrategy": {
+        "minimumHealthCapacity": 0.5,
+        "maximumOverCapacity": 0.2
+    }
+}

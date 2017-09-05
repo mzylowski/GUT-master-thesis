@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usepackage{wrapfig}
 \usepackage{floatflt}
+\usepackage{listings}
 \usepackage{multirow}
 \usepackage{comment}
 \usepackage{array}
@@ -27,6 +28,41 @@
 \usepackage{cite}
 \counterwithin{figure}{chapter}
 \newcommand{\done}{\cellcolor{teal}done}
+\usepackage{xcolor}
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
 
 \begin{document}
 
@@ -225,6 +261,7 @@ TODO\\
 
 
 DC - (ang. \textit{Data Center}) Centrum Danych\\
+TODO: skróty na stronie ze skrótami: NVMe, SATA, LDAP, NIS, RAM, MySQL, API, HTTP, IP; 
 \newline
 
 
@@ -527,7 +564,6 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 \caption{Lista obrazów, które mogą być użyte jako stage1 w systemie konteneryzacji rkt}
 \label{rkt_flavors}
 \centering
-
 \begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
   \hline
   \textbf{Nazwa rozwiązania} & \textbf{Wykorzystywany mechanizm izolacji} & \textbf{Opis mechanizmu izolacji}\\
@@ -612,9 +648,9 @@ Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra 
 \item Kube-scheduler - proces, który odpowiedzialny jest za rozkładanie zadań pomiędzy poszczególne komputery klastra. Aplikacja tylko w niewielkim stopniu jest konfigurowalna, zaś sam algorytm rozdzielania zadań jest zamknięty wewnątrz aplikacji i nie ma możliwości dostosowania go do własnych potrzeb. Kube-scheduler decyzję o kolejkowaniu zadań na poszczególne komputery w klastrze oprze o tak zwane etykiety ang. \textit{labels}. Etykiety są opcjonalnym mechanizmem. Pozwalają one grupować poszczególe komputery klastra. Przykładowo komputery z dużą ilością dysków twardych mogą być oznaczone odpowiednią etykietą. Następnie uruchamiając zadanie, które wymaga wygenerowania dużej ilości danych, poprzez odpowiednią etykietę, może być skierowane właśnie na taki komputer. Do problemu rozdzielania zadań, wrócę jeszcze w kolejnym rozdziale, gdzie zostaną porównane możliwości Kubernetesa i Mesosa.
 \item Kube-dns - odpowiedzialny jest za komunikację sieciową z zewnątrz klastra do aplikacji uruchomionych wewnątrz. Mechanizm ten umożliwia uruchamianie na klastrze serwisów, które mają być dostępne z zewnątrz (np. strony internetowe, bazy danych). Do komunikacji wewnętrznej w klastrze wykorzystywane są plug-in'y sieciowe, które nie będą szczegółowo opisywane w tej pracy.
 \end{itemize}
+TODO: PODY, NODY, SECRETS, etc
 
 \chapter{Analiza rozwiązania Mesos oraz przegląd systemów szeregowania zadań}
-\newpage
 
 \section{Architektura rozwiązania Mesos}
 
@@ -668,8 +704,287 @@ Podobnie jak w przypadku \textit{frameworków}, Mesos wystawia programowe API, k
 \item Izolatory - pozwalają na zaimplementowanie systemów związanych z izolowaniem zadań od siebie, czy też reagowania na sytuacje w których jedno zadanie jest interferowane przez drugie. Przykładem może być implementacja mechanizmu pozwalającego na migrowanie zadań z maszyn, na których zaczyna brakować zasobów z powodu innego trudnego obliczeniowo problemu.
 \item Moduły elekcyjne - pozwalają zaimplementować własny mechanizm wybierania lidera po rozłączeniu poprzedniego. Można tutaj wykorzystać inną bazę danych niż tą oferowaną przez \textit{Zookeeper'a}, np. \text{ETCD}.
 \end{itemize}
-TODO: skróty na stronie ze skrótami: NVMe, SATA, LDAP, NIS, RAM, MySQL
-TODO: Instalacja klastra, porównanie z kubernetesem. , frameworki, 
+
+\subsection{Instalacja klastra}
+Mesos w przeciwieństwie do kubernetesa nie posiada instalatora wskazywanego przez twórców rozwiązania. (Wyjątkiem jest tutaj komercyjna wersja - DC/OS). Kubernetes zaleca aby produkcyjne instalacje uruchamiane były w oparciu o kontenery. Jedyną aplikacją, która nie jest skonteneryzowana powinien być kubectl. Co więcej kubelet jest jedyną aplikacją, która uruchomiona jest w kotenerze bezpośrednio z poziomu systemd. Wszystkie pozostałe komponenty uruchamiane są już jako byty kubernetesa. W przypadku Mesos'a można zaobserwować znacznie bardziej tradycyjne podejście. Zalecaną metodą instalacji jest instalacja z paczek udostępnionych w repozytorium firmy \textit{mesosphere}. Skonfigurują się wtedy wszystkie \textit{unity systemd}, a na użytkowniku pozostanie jedynie kwestia umieszczenia adresów IP pozostałych elementów klastra. Niewątpliwie jednak, warto skorzystać z dobrodziejstw oferowanych przez izolację jaką dają kontenery i uruchomić klaster Mesosa z wykorzystaniem np technologii Docker. Jednym z podejść jest próba aplikowania obrazów przygotowywanych na potrzeby rozwiązania DC/OS. Innym skorzystanie z obrazów przygotowywanych przez innych użytkowników w ramach rozwoju wolnego oprogramowania. Ze względu na brak rozwiązania, które zadowalałoby mnie całkowicie postanowiłem w ramach tej pracy przygotować własne obrazy aplikacji \textit{mesos-master} oraz \textit{mesos-agent}. Więcej o tym produkcie powiem w kolejnym rozdziale. (TODO: namiary na rozdział).
+
+\section{Interfejs i konfiguracja}
+\subsection{Mesos HTTP API}
+Prócz programowego API, które może zostać wykorzystane do tworzenia modułów i systemów szeregowania, Mesos udostępnia również HTTP REST API, które służy jednak głównie celom monitoringu klastra. Lista wybranych \textit{endpointów} znajduje się w tabli \ref{mesos_endpoints}.  Kilka endpointów zostało wykorzystanych do badań opisaych w rozdziale czwartym. 
+
+\begin{table}[!htbp]
+\caption{Lista \textit{endpointów} dostępnych w rozwiązaniu Mesos}
+\label{mesos_endpoints}
+\centering
+\begin{tabular}{|p{4cm}|p{10cm}|}
+  \hline
+  \textbf{\textit{Endpoint}} & \textbf{Realizowana funkcja} \\
+  \hline
+  /logging/toggle & Pozwala na zmianę poziomu logowania aplikacji przez określony zadany czas. Może być wykorzystany do dokładnego analizowania sytuacji na klastrze.\\
+  \hline
+  /master/create-volumes & Tworzy wolumen, który może być później wykorzystany na potrzeby zadania. Do utworzenia wolumenu konieczne jest wskazanie agenta na którym wolumen powinien zostać stworzony. \\
+  \hline
+  /master/destroy-volumes & Niszczy wcześniej stworzony wolumen. \\
+  \hline
+  /master/frameworks & Wyświetla listę i informacje o zarejestrowanych \textit{frameworkach}. \\
+  \hline
+  /master/health & Zwraca informacje o zdrowiu wskazanego master'a. Jeśli reakcje master'a będą wolne lub będą inne problemy na podanym serwerze, to odpowiednia informacja zostanie tutaj zwrócona. \\
+  \hline
+  /maintenance/schedule & Pozwala ustawić klaster w tryb konserwacji. Umożliwia to wyłączanie wskazanych maszyn z klastra, celem wykonania fizycznych manipulacji przy sprzęcie, bądź innych prac administracyjnych w systemie. \\
+  \hline
+  /redirect & Zwraca informacje, który master jest aktualnym liderem. \\
+  \hline
+  /master/slaves & Pozwala na uzyskanie informacji oraz adresów IP podłączonych do klastra agentów. \\
+  \hline
+  /master/state & Zwraca stan wskazanego mastera. Odpowiedź zostanie zwrócona w formacie JSON. Będzie to wiele danych, począwszy od czasu elekcji, poprzez flagi z jakimi uruchomiony był master, na zarejestrowanych agentach skończywszy. Listę ważniejszych flag konfiguracyjnych umieszczono w tabeli \ref{mesos_flags}. \\
+  \hline
+  /tasks & Wyświetla informacje o wszystkich zadaniach na klastrze, ze wszystkich zarejestrowanych frameworków. \\
+  \hline
+  /teardown & Wyłącza wskazany framework, po wcześniejszym przymusowym zakończeniu wszystkich zadań na nim uruchomionym. \\
+  \hline
+  /metrics/snapshot & Zrzuca wszystkie mierzalne w Mesosie metryki w chwili wywołania do pliku, celem późniejszej analizy. Lista ważniejszych metryk została przedstawiona w tabeli \ref{mesos_metrics}.\\
+  \hline
+  /profiler/start & Uruchamia wbudowany w Mesosa system do profilowania pamięci. \\
+  \hline
+  /profiler/stop & Wyłącza tryb profilowania i zapisuje wynik do pliku. \\
+  \hline
+\end{tabular}
+\end{table}
+
+\subsection{Monitoring klastra za pomocą oferowanych przez Mesos'a metryk}
+Problem monitoringu klastra jest jedynm z ważniejszych, z jakich muszą sobie poradzić administratorzy DC. Wiele dostępnych narzędzi umożliwia przygotowanie zaawansowanych widoków i wykresów, które wykorzystują odpowiednie skrypty i odpytują system operacyjny o metryki. W przypadku Mesos'a część metryk udostępniona jest poprzez API \ref{mesos_metrics}.
+
+\begin{table}[!htbp]
+\caption{Lista metryk związanych z zasobami, dostępnych w rozwiązaniu Mesos}
+\label{mesos_metrics}
+\centering
+\begin{tabular}{|p{4cm}|p{10cm}|}
+  \hline
+  \textbf{Metryka} & \textbf{Opis} \\
+  \hline
+  master/cpus\_percent & Procent zaalokowanych procesorów.\\
+  \hline
+  master/cpus\_used & Ilość zaalokowanych procesorów. \\
+  \hline
+  master/cpus\_total & Całkowita liczba procesorów. \\
+  \hline
+  master/disk\_percent & Procent zaalokowanej przestrzeni dyskowej. \\
+  \hline
+  master/disk\_used & Zaalokowana przestrzeń dyskowa. Zwracana w mega bajtach. \\
+  \hline
+  master/disk\_total & Całkowita przestrzeń dyskowa dostępna na klastrze. Zwracana w mega bajtach. \\
+  \hline
+  master/mem\_percent & Procent zaalokowanej pamięci. \\
+  \hline
+  master/mem\_used & Zaalokowana pamięć na klastrze. Zwracana w mega bajtach. \\
+  \hline
+  master/mem\_total & Pamięć dostępna na klastrze. Zwracana w mega bajtach. \\
+  \hline
+\end{tabular}
+\end{table}
+
+Mesos udostępnia także wiele metryk z innych grup:
+\begin{itemize}
+\item \textit{Master} - czas elekcji, czas od uruchomienia.
+\item \textit{System} - obciążenie systemu w 5, 10 i 15 minucie.
+\item \textit{Agent} - informacje o agentach związanych z klastrem. Można uzyskać między innymi informacje o rozłączonych bądź zgubionych agentach czy oczekujących rejestracjach.
+\item \textit{Framework} - analogicznie do informacji o agentach.
+\item \textit{Task} - Informacje na temat uruchomionych, żądanych, zakończonych czy straconych zadań.
+\item \textit{Messages} - Usługi na klastrze (\textit{master}, \textit{agent}, \textit{zookeeper} oraz \textit{frameworki}) wymieniają bardzo dużo informacji na temat stanu klastra i operacji do wykonania. Metryki z tej grupy pozwalają m. in. przeglądanie tych informacji.
+\item \textit{Event queue} - informacje na temat zdarzeń odłożonych na kolejkę do wykonania.
+\end{itemize}
+
+\subsection{Flagi konfiguracyjne usług \textit{mesos-master} i \textit{mesos-agent}}
+Konfiguracja dla aplikacji \textit{mesos-master} i \textit{mesos-slave} mogą być skonfigurowane na dwa sposoby:
+\begin{itemize}
+\item Tworząc plik o nazwie flagi z zawartością będącą wartością tej flagi \ref{mesos_flags} w odpowiednim katalogu.
+\item Poprzez przekaznie flagi i jej wartości \ref{mesos_flags} jako zmienną środowiskową.
+\end{itemize}
+
+\begin{table}[!htbp]
+\caption{Lista ważniejszych flag konfigurujących klaster Mesos'a}
+\label{mesos_flags}
+\centering
+\begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
+  \hline
+  \textbf{Flaga} & \textbf{Pozwiązana aplikacja} & \textbf{Opis}\\
+  \hline
+  --ip & Master i agent & Adres IP, na którym będzie nasłuchiwał proces. Tylko po tym adresie będzie możliwość połączenia się z klastrem, chyba że adres ten zostanie ustawiony na 0.0.0.0. \\
+  \hline
+  --port & Master i agent & Port na którym będzie nasłuchiwał proces. Domyślnie 5050. \\
+  \hline
+  --modules & Master i agent & Ścieżka do pliku w formacie JSON, który wskazuje listę modułów do załadowania. \\
+  \hline
+  --hostname & Master i agent & Nazwa hasta jaką proces przedstawi się aplikacji Zookeeper. \\
+  \hline
+  --logging\_level & Master i agent & Wskazanie jakim poziomem logowania ma posługiwać się proces.  \\
+  \hline
+  --work\_dir & Master i agent & Flaga obowiązkowa. Wartością jest śćieżka dla katalogu w ktorym Mesos będzie pracował i zapisywał potrzebne mu do działania pliki. \\
+  \hline
+  --quorum & Master & Obowiązkowa przy zestawieniu klastra wysokiej dostępności. Określa liczbę masterów, jaka powinna być podłączona do klastra, aby było możliwe przeprowadzenie elekcji lidera. Zalecane ustawienie liczba większa niż ilość masterów podzielona przez dwa. \\
+  \hline
+  --zk & Master & Obowiązkowa przy zestawieniu klastra wysokiej dostępności. Adres URL (TODO: do słownika) usługi zookeeper. \\
+  \hline
+  --cluster & Master & Nazwa klastra, która będzie wyświetlana w logach oraz UI (TODO: do słownika) w przeglądarce. \\
+  \hline
+\end{tabular}
+\end{table}
+
+\subsection{Podsumowanie - porównanie Mesosa z Kubernetesem}
+W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych rozwiązań kontrolujących uruchamianie zadań na klastrach \ref{k8s_mesos_comparision}. Ze względu na dojrzałość projektu i przeniesienie odpowiedzialności za rozdzielanie zadań na produkty trzecie, do dalszej analizy wybrałem rozwiązanie Mesos. Również szerokie możliwości projektowania własnych modułów powoduje, że rozwiązanie jest znacznie bardziej przykrajalne do potrzeb danego DC.
+
+\begin{table}[!htbp]
+\caption{Porównanie Mesos'a i Kubernetesa}
+\label{k8s_mesos_comparision}
+\centering
+\begin{tabular}{|p{4cm}|p{6cm}|p{6cm}|}
+  \hline
+  \textbf{Cecha porównawcza} & \textbf{Kubernetes} & \textbf{Mesos}\\
+  \hline
+  Wsparcie dla trybu wysokiej dostępności & TAK, wspierane w kubelecie poprzez odpowiednią falgę. & TAK, wykorzystuje zewnętrzną aplikację - Zookeeper. \\
+  \hline
+  Wspierane rozwiązania konteneryzacyjne & mesos-containerizer, docker & docker, rkt \\
+  \hline
+  Przechowywanie stanu klastra & Baza danych ETCD & W pamięci procesów oraz w plikach w katalogu roboczym. \\
+  \hline
+  Mechanizm rozdzielania zadań & Opierający się na etykietach & Wystawiony na zewnątrz poprzez programowe API. \\
+  \hline
+  CLI (TODO: Słownik) & Aplikacja kubectl & Brak. Ewentualna możliwość implementacji w oparciu o moduł lub framework. \\
+  \hline
+  Instalator & Kubespray, Kubeadm & Tylko w wersji komercyjnej DC/OS \\
+  \hline
+  Firmy stojące za rozwiązaniem & Google, CoreOS & Apache, Mesosphera \\
+  \hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+\section{Przegląd systemów szeregowania zadań}
+\subsection{Marathon}
+
+Marathon to najstarszy \textit{framework} (tabela \ref{marathon_info}), (rys. \ref{marathon_logo}) do Mesos'a dostępny na rynku. 
+\begin{table}[!h]
+\caption{Podsumowanie systemu szeregowania Marathon}
+\label{marathon_info}
+\centering
+\begin{tabular}{|p{4cm}|p{6cm}|}
+  \hline
+  \textbf{Język programowania} & Scala \\
+  \hline
+  \textbf{Licencja} & Wolne oprogramowanie, Apache 2.0. \\
+  \hline
+  \textbf{Tryb HA} & Wsparcie dla trybu HA z wykorzystaniem Zookeepera. \\
+  \hline
+  \textbf{Firma rozwijająca} & Mesosphera \\
+  \hline
+  \textbf{HTTP API} & TAK \\
+  \hline
+  \textbf{UI} & TAK, w przeglądarce (Django) \\
+  \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.5]{pics/marathon_logo.png}
+	\caption{Logo projektu Marathon.}
+	\label{marathon_logo}
+\end{figure}
+
+Uruchomić zadanie używając aplikacji Marathon, można na dwa sposoby. Albo wybrać i wypełnić odpowiednie pola w interfejsie graficznym w przeglądarce a następnie wysłać żądanie, lub też napisać odpowiednią definicję zadania w formacie pliku JSON i wysłać ją korzystając z odpowiedniego \textit{endpointa} HTTP API.
+Do głównych cech frameworka należą:
+\begin{itemize}
+\item Wsparcie dla wielu rozwiązań kontenerowych - docker, konteneryzator Mesos
+\item Wsparcie dla wolumenów uruchamianych i podpinanych do kontenerów. Umożliwia to uruchamianie zadań potrzebujących dostępu do dużych obszarów dysku i korzystających z nich nawet po restartcie. Świetnym przykładem są tutaj aplikacje bazodanowe, takie jak MySQL.
+\item Równoważenie obciążenia (ang. \textit{Load Balancing}). Opcja rodzielania obciążenia jest bardzo pożądana przez administratorów centrów danych. Podział ruchu na wiele komputerów jest kluczowy przy przenoszeniu aplikacji klienckiej na chmurę obliczeniową. Mesos, nie udostępnia tej funkcji natywnie.
+\item Mechanizm PODów znany z rozwiązania rkt. W Mesosie zadanie zostanie przedstawione jako jedno zadanie, ale tak naprawdę będzie składało się z ono kilku zadań zarządzanych z poziomu Marathon'a.
+\item Dyrektywy dla \textit{scheduler'a} - możliwość określenia komputerów na których dane zadanie może być uruchomione wraz ze wskazaniem ile maksymalnie instancji może być jednocześnie uruchomionych. Jest to bardziej zaawansowana implementacja mechanizmu etykiet wspieranego w kubernetesie.
+\item Regularne monitorowanie stanu uruchomionych zadań (ang. \textit{Health Checks}) - w PODzie można stworzyć dodatkowe zadanie \textit{healthz}, które posłuży do sprawdzania stanu aplikacji. Technicznie jest to regularne odpytywanie webserwisu uruchomionego w podzie i stwierdzanie zdrowia zadania w zależności od zwróconego kodu HTTP.
+\end{itemize}
+
+Poniżej przedstawion przykładowy plik JSON, który uruchuchomi zadanie poprzez \textit{framework}. Zadanie zarazerwuje 1.5 procesorów z klastra oraz 256 mega bajtów pamięci RAM. Podane polecenie (\textit{sleep}) zostanie uruchomione w kontenerze \textit{Dockera}, wykorzystując obraz \textit{busybox}. Dodatkowo przy uruchamiania kontenera zostaną pobrane dwa pliki, a także zostanie dostawione rozwiązanie pozwalające na testowanie zdrowia podanego kontenera (ang. \textit{health checks}). 
+
+\lstinputlisting[language=Json]{listings/marathon_example.json}
+
+\subsection{Singularity}
+Singularity (tab \ref{singularity_info}, rys. (\ref{singularity_logo}) to największy konkurent rozwiązania \textit{Marathon}. Jego głównym wyróżnikiem jest dostarczanie wielu różnych typów zadań (Marathon jest nastawiony na uruchamianie zadań typu 'Serwis' - gdy zadanie nie jest uruchomione, będzie próbowany restart). W Singularity zadanie które ma być wykonane tylko raz i zakończone (na przykład proste obliczenie), można uruchomić jako zadanie \textit{One-shoot}. 
+\begin{table}[!h]
+\caption{Podsumowanie systemu szeregowania Singularity}
+\label{singularity_info}
+\centering
+\begin{tabular}{|p{4cm}|p{6cm}|}
+  \hline
+  \textbf{Język programowania} & Java \\
+  \hline
+  \textbf{Licencja} & Wolne oprogramowanie, Apache 2.0. \\
+  \hline
+  \textbf{Tryb HA} & Wsparcie dla trybu HA z wykorzystaniem Zookeepera. \\
+  \hline
+  \textbf{Firma rozwijająca} & HubSpot \\
+  \hline
+  \textbf{HTTP API} & TAK \\
+  \hline
+  \textbf{UI} & TAK, w przeglądarce (Java Script) \\
+  \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.5]{pics/singularity.png}
+	\caption{Logo projektu Singularity.}
+	\label{singularity_logo}
+\end{figure}
+
+Do głównych cech rozwiązania istotnych z punktu widzenia administratora centrum danych są:
+\begin{itemize}
+\item Wsparcie dla konteneryzacji z wykorzystaniem technologi Docker lub konteneryzacji Mesos
+\item Udostępnie zarówno interfejsu REST API jak i interfejsu graficznego w przeglądarce. 
+\item Usługa równoważnenia obiążenia jest dostarczana przez firmę HubSpot w oddzielnym produkcie - Baragon.
+\item Wsparcie dla sprawdzania zdrowia zadań (ang. \textit{Health Checks}) oraz wycofywania wysłanych transakcji.
+\item Notyfikacje mailowe dotyczące zdarzeń na klastrze.
+\item Możliwość generowania raportów dotyczących zdarzeń na klastrze.
+\item Twórcy aplikacji pozostawili możliwość zaimplementowania własnych modułów, co umożliwia między innymi możliwość zaprojektowania własnego egzekutora dla zadań. 
+\end{itemize}
+
+Poniżej przedstawiono krótki plik w formacie JSON, który umożliwia uruchomienie kontenera Dockerowego używając obrazu hubspot/singularity-test-service:1.0, otwierając w nim dwa porty (8081, 8080) oraz rejestrują usługę sprawdzania zdrowia zadania na endpoincie /healthcheck. Zadanie będzie zużywać jeden procesor klastra i zarezerwuje 128 mega bajtów pamięci RAM.
+
+\lstinputlisting[language=Json]{listings/singularity_example.json}
+
+\subsection{Aurora}
+Aurora (tab. \ref{aurora_info}, rys. (\ref{aurora_logo}) jest projektem rozwijanym przez fundację Apache w dużej części przez tych samych inżynierów co Mesos. Jego głównym wyróżnikiem jest sposób rezerwowania zasobów. Gdy większość frameworków działa na zasadzie otrzymania zadania do wykonania, a następnie próbie uzyskania zasobów do wykonania tego zadania, Aurora realizuje odwrotną politykę. Tuż po uruchomieniu Aurory, wszystkie zasoby klastra zostają przejęte przez framework, co powoduje szybsze uruchamianie zleconych zadań.
+
+\begin{table}[!h]
+\caption{Podsumowanie systemu szeregowania Aurora}
+\label{aurora_info}
+\centering
+\begin{tabular}{|p{4cm}|p{6cm}|}
+  \hline
+  \textbf{Język programowania} & Java \\
+  \hline
+  \textbf{Licencja} & Wolne oprogramowanie, Apache 2.0. \\
+  \hline
+  \textbf{Tryb HA} & Brak. Musi zostać zapewniony innymi narzędziami. \\
+  \hline
+  \textbf{Firma rozwijająca} & Apache Fundation \\
+  \hline
+  \textbf{HTTP API} & Brak. \\
+  \hline
+  \textbf{UI} & TAK, ale bez możliwości urchamiania nowych zadań. \\
+  \hline
+\end{tabular}
+\end{table}
+
+Aby uruchomić zadanie a Aurorze należy 
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.5]{pics/aurora_logo.png}
+	\caption{Logo projektu Aurora.}
+	\label{aurora_logo}
+\end{figure}
+
 
 \chapter{Nowy rozdział...}
 \newpage
