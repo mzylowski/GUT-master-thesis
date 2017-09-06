@@ -861,6 +861,9 @@ W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych roz
 \newpage
 
 \section{Przegląd systemów szeregowania zadań}
+
+Do Mesosa zaprojektowano wiele frameworków (na dzień pisania tego dokumenu oficjalna strona produktu linkuje 25 rozwiązań). W tej pracy przyjrzę się szczególnie trzem systemom szeregowania - tym, które pozwalają na uruchamianie serwisów i zadań działających dłuższy czas (porównanie z kubernetesem). 
+
 \subsection{Marathon}
 
 Marathon to najstarszy \textit{framework} (tabela \ref{marathon_info}), (rys. \ref{marathon_logo}) do Mesos'a dostępny na rynku. 
@@ -961,7 +964,7 @@ Aurora (tab. \ref{aurora_info}, rys. (\ref{aurora_logo}) jest projektem rozwijan
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|}
   \hline
-  \textbf{Język programowania} & Java \\
+  \textbf{Język programowania} & Java, Python \\
   \hline
   \textbf{Licencja} & Wolne oprogramowanie, Apache 2.0. \\
   \hline
@@ -976,18 +979,163 @@ Aurora (tab. \ref{aurora_info}, rys. (\ref{aurora_logo}) jest projektem rozwijan
 \end{tabular}
 \end{table}
 
-Aby uruchomić zadanie a Aurorze należy 
-
 \begin{figure}[!h]
 	\centering
-	\includegraphics[scale=0.5]{pics/aurora_logo.png}
+	\includegraphics[scale=1]{pics/aurora_logo.png}
 	\caption{Logo projektu Aurora.}
 	\label{aurora_logo}
 \end{figure}
 
+Szczególnymi wyróżnikami projektu Aurora, są:
+\begin{itemize}
+\item Wsparcie dla konteneryzacji z wykorzystaniem technologi Docker lub konteneryzacji Mesos.
+\item Dyrektywy dla \textit{scheduler'a} - możliwość określenia komputerów na których dane zadanie może być uruchomione wraz ze wskazaniem ile maksymalnie instancji może być jednocześnie uruchomionych.
+\item Wsparcie dla planowania zadań (ang. \textit{cron jobs}.
+\item Podobnie jak w mechaniźmie Singularity pozostawiono użytkownikowi zaimplementowanie własnych egzekutorów.
+\item Uruchomienie zadania wymusza przygotowanie programu w języku Python. Umożliwia to doimplementowanie innych mechanizmów, które mogą się wykonywać wraz z zadaniem.
+\end{itemize}
 
-\chapter{Nowy rozdział...}
-\newpage
+Jak widać w tabeli \ref{aurora_info} Aurora nie udostępnia API HTTP. Aby uruchomić zadanie w Aurorze należy przygotować dwa programy w języku Python. Pierwszy z nich będzie poleceniem do wykonania, zaś drugi będzie opisywał sposób uruchomienia zadania.
+
+Kod prostego zadania, który będzie wypisywał linię a następnie zasypiał na zadany czas:
+\lstinputlisting[language=Json]{listings/aurora_task.py}
+
+Następnie należy przygotować program, który zdefinuje w jaki sposób podane zadanie ma być uruchomione:
+\lstinputlisting[language=Json]{listings/aurora_run.py}
+
+Aby uruchomić zadanie należy wykonać poniższe polecenie, jako parametr wskazując powyższy plik.
+\begin{lstlisting}
+aurora job create [klaster] [zadanie]
+\end{lstlisting}
+
+\chapter{Praktyczna analiza przedstawionych rozwiązań}
+\section{Przygotowania klastra do wykonania analizy}
+\subsection{Specyfikacja techniczna klastra}
+Na potrzeby przeprowadzenia pomiarów do niniejszej pracy magisterskiej otrzymałem poprzez mojego promotora sześć komputerów (rys. \ref{klaster_magisterski_photo}). Na każdym z nich zainstalowałem system operacyjny Ubuntu 16.04 oraz podstawowe aplikacje (openssh, serwer VPN etc). Do zarządzania klastrem (instalowanie paczek, ponowne uruchamianie itp) wykorzystałem nowoczesne rozwiązanie Ansible. Dostarczone komputery były identyczne, a każdy z nich posiada:
+\begin{itemize}
+\item Procesor Intel Core 2 Duo (E7400 @ 2x 2.80GHz)
+\item 3GB pamięci RAM
+\item Dysk twardy o rozmiarze 500GB
+\end{itemize}
+
+Jeden z komputerów nie został włączony do klastra i posłużył jako host do zarządzania pozostałymi komputerami. Pozostałe 5 komputerów posłużyło do instalacji klastra. Na każdym z nich został zainstalowany Docker, Mesos oraz Kubernetes. Jeden z komputerów posłużył jako master, zaś pozostałe 4 zostałe wykorzystane jako komputery agenty. W tabeli \ref{klaster_magisterski} przedstawiono konfigurację klastra.
+
+\begin{table}[!h]
+\caption{Podsumowanie systemu szeregowania Aurora}
+\label{klaster_magisterski}
+\centering
+\begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
+  \hline
+   & 192.168.0.11 & 192.168.0.12 & 192.168.0.13 & 192.168.0.14 & 192.168.0.15 & 192.168.0.16 \\
+  \hline
+  \textbf{Rola} & Zarządzanie & Kontroler & Node & Node & Node & Node \\
+  \hline
+  \textbf{Docker} & TAK & TAK & TAK & TAK & TAK & TAK \\
+  \hline
+  \textbf{Rkt} & TAK & NIE & NIE & NIE & NIE & NIE \\
+  \hline
+  \textbf{Kubernetes} & NIE & Master & Worker & Worker & Worker & Worker \\
+  \hline
+  \textbf{Mesos} & NIE & Master & Agent & Agent & Agent & Agent \\
+  \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.15]{pics/20170308_163141.jpg}
+	\caption{Komputery użyte do wykonania badań.}
+	\label{klaster_magisterski_photo}
+\end{figure}
+
+W ten sposób udało się uzyskać następującą ilość zasobów, które mogły by rezerwowane przez Mesos'a do wykonywania zadań:
+\begin{itemize}
+\item 8 procesorów o taktowaniu 2.80GHz każdy,
+\item 12GB pamięci RAM,
+\item Pamięć dyskową o powierzchni prawie 4TB.
+\end{itemize}
+
+\subsection{Sposób instalacji Mesos'a na klastrze}
+Aby zainstalować oprogramowanie Mesos na potrzeby tej pracy przygotowałem własne obrazy dla aplikacji mesos-master oraz mesos-slave. Ich kod został opublikowany w serwisie github.com a zbudowane obrazy zostały opublikowane w serwisie quay.io oraz dockerhub. Aby pobrać stworzony przeze mnie obraz oprogramowaniem docker należy wykonać polecenie:
+\begin{lstlisting}
+docker pull quay.io/mesosdockerized/mesos-master
+docker pull quay.io/mesosdockerized/mesos-slave
+\end{lstlisting}
+
+Zaś kod obu obrazów dostępny jest tutaj:
+\begin{lstlisting}
+https://github.com/mesos-dockerized/master-dockerfile
+https://github.com/mesos-dockerized/slave-dockerfile
+\end{lstlisting}
+
+Usługi mesos-master i mesos-slave kontrolowane są przez odpowiednie pliki konfiguracyjne \textit{systemd}. Odpowiednio dla mastera:
+\lstinputlisting[language=Json]{listings/mesos-master.service}
+
+Dla agenta:
+\lstinputlisting[language=Json]{listings/mesos-slave.service}
+
+Dla usług uruchamianych w kontenerach konieczne było zastsowanie kilku dodatkowych flag:
+\begin{itemize}
+\item MESOS\_NO\_HOSTNAME\_LOOKUP - Ze względu na brak serwera DNS na klastrze, ustawienie tej zmiennej jest konieczne by Mesos nie próbował rozwiązywać nazwy pozostałych serwisów. 
+\item MESOS\_REGISTRY - Uruchomienie procesu mastera w kontenerze powoduje, że po jego zakończeniu wszelkie logi znikną razem z kontenerem. Esportując jednocześnie flagę MESOS\_WORK\_DIR i MESOS\_LOG\_DIR wymuszamy zapis logów i informacji roboczych na dysku gospodarza. W ten sposób nawet po restarcie kontenera stan klastra jest zachowany.
+\item MESOS\_SYSTEMD\_ENABLE\_SUPPORT - Nie jest możliwe uruchomienie uruchomienie Mesosa ze wsparciem \textit{systemd}, ponieważ \textit{systemd} nie jest używane wewnątrz kontenera.
+\end{itemize}
+Kluczowym w uruchomieniu procesu mesos-slave w kontenerze jest przekazanie do jego wnętrza części plików gospodarza. Są to zarówno \textit{control-groupy} z systemu gospodarza oraz zainstalowana aplikacja dockera. Ten zabieg jest niezbędny by zadania Mesosa, które mają być uruchamiane w Dokerze, uruchomiły się w systemie operacyjnym gospodarza.
+
+Obrazy Zookeepera, Marathona i Singularity zostały pobrane z internetu a ich konfiguracja znajduje się poniżej. Framework Aurora, został zainstalowany "klasycznie", gdyż ze względu na jego poziom skomplikowania i architekturę, bardzo trudne jest jego umieszczenie w kontenerze. 
+
+Konfiguracja kontenera z Zookeeperem:
+\lstinputlisting[language=Json]{listings/zookeeper.service}
+
+Konfiguracja kontenera z frameworkiem Marathon:
+\lstinputlisting[language=Json]{listings/marathon.service}
+
+Konfiguracja kontenera z frameworkiem Singularity:
+\lstinputlisting[language=Json]{listings/singularity.service}
+
+\section{Przeprowadzone pomiary i analizy}
+Po przeprowadzeniu i udokumentowaniu procesu instalacji dokonałem pomiarów związanych z czasem startu zadań uruchamianych przez poszczególne frameworki. Dodatkowo dokonałem prostego sprawdzenia testów izolacji we wcześniej opisanych rozwiązaniach.
+
+\subsection{Czas uruchomienia zadań}
+Do testu został wybrany bardzo popularny obraz \textit{httpd}. Obraz należy do grupy obrazów wspieranych oficjalnie przez firmę Docker. 
+\begin{lstlisting}
+https://hub.docker.com/_/httpd/
+\end{lstlisting}
+
+Obraz może być pobrany poleceniem:
+\begin{lstlisting}
+docker pull httpd
+\end{lstlisting}
+
+Test polega na pobraniu aktualnej godziny z systemu operacyjnego a następnie wysłanie do frameworka polecenia uruchamiającego zadanie opierające się o podany wyżej obraz. Kontener z obrazem httpd wystawi serwer http na porcie 80. Test będzie oczekiwał na otwarcie tego portu, a gdy to się wydarzy ponownie pobierze czas z systemu operacyjnego i odejmie go od tego pobranego na początku. W ten sposób uzyskam informację ile czasu trwało uruchomienie zadania. Tak przygotowany test został uruchomiony 10 tysięcy razy dla każdego frameworka a uśredniony wynik został przedstawiony w tabeli \ref{framework_results}. Poniżej przedstawiam kod potrzebny do wykonania pojedyńczego pomiaru dla frameworka Marathon.
+
+Definicja zadania (task.json):
+\lstinputlisting[language=Json]{listings/test_job.json}
+
+Uruchomienie podanej powyżej definicji i oczekiwanie na jego uruchomienie można zrealizować poniższym skryptem (tester.sh):
+\lstinputlisting[language=Json]{listings/tester.sh}
+
+Pojedyńczy pomiar można dokonać mierząc czas wykonania skryptu za pomocą polecenia time.
+\begin{lstlisting}
+time ./tester.sh
+\end{lstlisting}
+
+\begin{table}[!h]
+\caption{Uśrednione wyniki czasu uruchamiania zadań na poszczególnych frameworkach}
+\label{framework_results}
+\centering
+\begin{tabular}{|p{4cm}|p{4cm}|}
+  \hline
+  \textbf{Framework} & \textbf{Uśredniony czas [s]} \\
+  \hline
+  Marathon & 1.117s \\
+  \hline
+  Singularity & 1.267s \\
+  \hline
+  Aurora & 0.870s \\
+  \hline
+\end{tabular}
+\end{table}
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}

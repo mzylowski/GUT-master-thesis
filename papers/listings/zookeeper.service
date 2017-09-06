@@ -1,0 +1,19 @@
+[Unit]
+Description=Zookeeper in docker
+Requires=docker.service
+After=docker.service
+
+[Service]
+ExecStart=/usr/bin/docker run \
+        --name=zookeeper \
+        --restart=always \
+        -p 2181:2181 \
+        -p 2888:2888 \
+        -p 3888:3888 \
+        jeygeethan/zookeeper-cluster 192.168.0.12 1
+ExecStop=/usr/bin/docker stop -t 2 zookeeper
+ExecStopPost=/usr/bin/docker rm -f zookeeper
+Restart=always
+RestartSec=10
+[Install]
+WantedBy=multi-user.target
