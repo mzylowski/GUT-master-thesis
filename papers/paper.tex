@@ -111,9 +111,9 @@
 \vspace*{1cm}
 
 \begin{flushleft}
-Tytuł pracy w języku polskim: TODO\\
+Tytuł pracy w języku polskim: Przegląd i analiza zachowań  systemów szeregujących zadania w systemie Mesos w zależności od rodzaju wykonywanego zadania \\
 \vspace*{0.4cm}
-Tytuł pracy w języku angielskim: TODO\\
+Tytuł pracy w języku angielskim: Mesos Scheduling System Evaluation \\
 \end{flushleft}
 
 \vspace*{1.5cm}
@@ -183,7 +183,7 @@ Tytuł pracy w języku angielskim: TODO\\
 
 \vspace*{0.5mm}
 
-Ja, niżej podpisany(a), wyrażam zgodę/nie wyrażam zgody* na korzystanie z mojej pracy dyplomowej zatytułowanej: Ewolucyjny wieloagentowy system bezzałogowych łodzi monitorujących akweny morskie
+Ja, niżej podpisany(a), wyrażam zgodę/nie wyrażam zgody* na korzystanie z mojej pracy dyplomowej zatytułowanej: Przegląd i analiza zachowań  systemów szeregujących zadania w systemie Mesos w zależności od rodzaju wykonywanego zadania 
 do celów naukowych lub dydaktycznych. \footnote{ Zarządzenie Rektora Politechniki Gdańskiej nr 34/2009 z 9 listopada 2009 r., załącznik nr 8 do instrukcji archiwalnej PG.}\\
 Gdańsk, dnia  ........................  \hspace{5cm}
 \begin{tabular}{c}
@@ -1021,7 +1021,7 @@ Na potrzeby przeprowadzenia pomiarów do niniejszej pracy magisterskiej otrzyma�
 Jeden z komputerów nie został włączony do klastra i posłużył jako host do zarządzania pozostałymi komputerami. Pozostałe 5 komputerów posłużyło do instalacji klastra. Na każdym z nich został zainstalowany Docker, Mesos oraz Kubernetes. Jeden z komputerów posłużył jako master, zaś pozostałe 4 zostałe wykorzystane jako komputery agenty. W tabeli \ref{klaster_magisterski} przedstawiono konfigurację klastra.
 
 \begin{table}[!h]
-\caption{Podsumowanie systemu szeregowania Aurora}
+\caption{Role poszczególnych komputerów w klastrze}
 \label{klaster_magisterski}
 \centering
 \begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
@@ -1136,6 +1136,40 @@ time ./tester.sh
   \hline
 \end{tabular}
 \end{table}
+
+\subsection{Testy izolacji}
+Testy izolacji polegały na uruchomieniu w różnych rozwiązaniach i konfiguracjach obrazu kontenerowego z zaszytą w środku fork-bombą. Fork bomba jest to implementacja nieskończonej pętli w której uruchamia się kolejna instancja tego samego procesu. Atak opiera się na bardzo szybkim rezerwowaniu zasobów pod kolejne procesy oraz na rezerwowaniu czasu procesora na wykonanie każdego nowo stworzonego procesu. Fork-bomba jest skrajnym i bardzo trudnym do wyizolowania przypadkiem. Celem moich testów było stwierdzenie w jakim stopniu poszczególne przedstawione rozwiązania radzą sobie z takim przypadkiem. Za pełny sukces uznam sytuację w której uruchomiony kontener z forkbombą nie będzie wpływał na uruchomiony system oraz inne uruchomione kontenery.
+
+Do przeprowadzenia testu został wykorzystany obraz oparty o następujący plik \textit{Dockerfile}:
+\lstinputlisting[language=Json]{listings/Dockerfile}
+
+Poniżej przedstawiam rezultat uruchomienia powyższego obrazu w poszczeglnych konfiguracjach:
+\begin{itemize}
+\item Konteneryzacja Dockera - po uruchomieniu obrazu poleceniem docker run i pozostawieniu systemu operacyjnego na 30 minut została dokonana analiza. Docker jako aplikacja klient serwer przestała być użyteczna. Nie było możliwe wykonanie żadnego polecenia poprzedzonego słowem 'docker'. Z tego względu nie było możliwe uruchomienie żadnego nowego kontenera, ani wejście do już istniejącego. Jednakże inny kontener uruchomiony na tym samym komputerze (httpd) odpowiadał na żądania na porcie 80. System operacyjny był stabilny, ale dało się odczuć zaczący spadek responsywności systemu. Wykonując niektóre polecenia system zwracał informacje o braku pamięci.
+\item Konteneryzacja rkt z mechanizmem \textit{fly} - zgodnie z oczekiwaniem uruchomienie kontenera miało wpływ na system operacyjny. Pamięć rezerwowana przez proces kontenera była jednocześnie pamięcią, którą mógł rezerwować system operacyjnym. W ciągu kilku minut system przestał być stabilny, przestało działać SSH a jedynym sposobem na odzyskanie stabilności był restart systemu.
+\item Konteneryzacja rkt w oparciu o c-grupy - doszło do bardzo podobnego zachowania jak przy konteneryzacji aplikacją Docker. Widoczny był spadek responsywności systemu natomiast możliwe było uruchamianie nowych kontenerów.
+\item Konteneryzacja rkt z mechanizmem \textit{qemu/lkvm} - zgodnie z oczekiwaniem proces nie był w stanie przejąć pamięci systemu operacyjnego, poza tą przejętą przez maszynę wirtualną.
+\item Mesos z konteneryzacją Docker'a - Mesos nie dostarcza żadnego dodatkowego mechanizmu izolacji poza uruchomieniem kontenera Dockera. Dlatego system zachowuje się identycznie jak przy uruchomieniu pojedyńczego kontenera dockerowego.
+\item Mesos z wykorzystaniem konteneryzacji natywnej - system operacyjny został zdławiony brakiem pamięci (podobnie jak przy \textit{rkt-fly}). Jedynym sposobem by odzyskać sprawność systemu był jego restart. Niestety po utracie kontaktu z agentem, Mesos uruchomił problematyczne zadanie na innym komputerze, również destabilizując go.
+\item Kubernetes - przy domyślnej konfiguracji zadanie zostanie uruchomione w kontenerze Dockerowym i system zostanie doprowadzony do stanu jak z pierwszego punktu. Jednakże kubernetes posiada możliwość uruchomienia zadania z narzuconymi limitami. Wykorzystując ten mechanizm udało się odizolować zadanie od systemu operacyjnego. 
+\end{itemize}
+
+\chapter{Podsumowanie wykonanej analizy}
+Opierając się na testach analizy izolacji oraz czasu uruchamiania, można stwierdzić, że najbardziej uniwersalnym rozwiązaniem jest wykorzystanie Mesosa z systemem szeregowania Marathon i uruchamianie zadań w oparciu o system konteneryzacji Docker. Jednakże w bardziej specyficznych przypadkach: 
+\begin{itemize}
+\item Wiele pojedyńczych zadań obliczeniowych - gdy najważniejszym kryterium jest szybkie uruchamianie zadań najbardziej efektywnym systemem szeregowania wydaje się być Aurora. Decydującą przewagą jest tutaj rezerwowanie wszytkich zasobów klastra, dzięki czemu framework omija fazę negocjowania ofert z zasobami. Jedncześnie powoduje to, że nie jest możliwe zainstalowanie żadnego innego frameworka na klastrze. Innym problemem związanym z wykorzystaniem tego frameworka, jest poziom skomplikowania w kwesti uruchamiania zadań, natomiast w przypadku bardzo częstego uruchamiania zadań warto zainwestować w implementację tego mechanizmu.
+\item Niewielka ilość zadań obliczeniowych - system szeregowania Singularity posiada typ zadań \textit{One-shoot}. Umożliwia on wykonanie pojedyńczej pracy bez ponownego uruchamiania procesu po jego zakończeniu. Jeśli czas startu nie jest priorytetem to użycie frameworka Singularity pozwoli na uruchamianie zadań obliczeniowych bez żadnych dodatkowych implementacji, pozwalając jednocześnie na używanie innych systemów szeregowania. 
+\item Zadania typu serwis - jeśli celem klastra jest serwowanie treści i równoważenie obciążenia to zarówno system szeregowania Marathon jak i Singularity wydają się spełniać oczekiwania. W systemie Singularity przygotowane jest rozwiązanie do równoważenia obciążenia, natomiast przy wykorzystaniu frameworka Marathon należy zatroszyć się o to rozwiązanie samemu (bazując na przykład na zananym rozwiązaniu - HAProxy).
+\item Zadania w których izolacja jest najważniejsza - gdy kontener ma zostać udostępniony bezpośrednio klientowi końcowemu lub też aplikacja działająca w kontenerze jest niestabilna jeśli chodzi o wykorzystanie zasobów, najbezpieczniej jest wykorzystać rozwiązanie rkt wraz z obsługą KVM'a (qemu lub lkvm). Wsparcie dla tych rozwiązań posiada orkiestrator Kubernetes.
+\end{itemize}
+
+Analiza obecnych rozwiązań wskazuje kilka problemów, które mogłby być miejscem do dalszych prac inżynierskich:
+\begin{itemize}
+\item System konteneryzacji Docker powinien radzić sobie z izolowaiem fork bomby bez żadnych dodatkowych konfiguracji i parametrów.
+\item Orkiestrator Mesos powinienn wspierać różne mechanizmy konteneryzacji. Aktualnie nie jest możliwe użycie Mesosa z rozwiązaniem rkt.
+\item Orkiestrator Mesos powinien oferować mechanizm który uruchomi kontener w taki sposób by jego izolowanie było skuteczne. Taki mechanizm zaimplementowany jest w Kubernetesie (\textit{limits}).
+\item System konteneryzacji rkt w swoim domyślnym rozwiązaniu konteneryzacyjnym powinien skutecznie izolować problemy typu fork bomby.
+\end{itemize}
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}
