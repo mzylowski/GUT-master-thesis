@@ -24,11 +24,13 @@
 \renewcommand{\familydefault}{\sfdefault}
 \usepackage{chngcntr}
 \usepackage{amsmath}
+\usepackage[final]{pdfpages} 
 \usepackage{xcolor,colortbl}
 \usepackage{cite}
 \counterwithin{figure}{chapter}
 \newcommand{\done}{\cellcolor{teal}done}
 \usepackage{xcolor}
+%\usepackage{gutthesis}
 
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
@@ -66,172 +68,17 @@
 
 \begin{document}
 
+\includepdf[pages=1-4]{header.pdf}
+%\includepdf[pages=1-2]{formal-header.pdf}
 
 \newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
 \setlength{\parindent}{1.25cm}
 
-%\justify
 
-
-\begin{titlepage}
-  \begin{center}
-
-
-\begin{center}
-\begin{tabular}{l l r}
- 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\
-\end{tabular}
-\end{center}
-
-\vspace*{0.5cm}
-
-\begin{flushleft}
-
-	Imię i nazwisko studenta: Michał Żyłowski\\
-	\vspace*{0.1cm}
-	Nr albumu: 137448\\
-	\vspace*{0.1cm}
-	Studia drugiego stopnia\\
-	\vspace*{0.1cm}
-	Forma studiów: stacjonarne\\
-	\vspace*{0.1cm}
-	Kierunek studiów: Informatyka\\
-	\vspace*{0.1cm}
-	Specjalność/profil: TODO!!!\\
-
-
-\end{flushleft}
-
-\vspace*{1.8cm}
-
-\begin{flushleft}
-{ \large {\bf{PRACA DYPLOMOWA MAGISTERSKA}}  }
-\end{flushleft}
-
-\vspace*{1cm}
-
-\begin{flushleft}
-Tytuł pracy w języku polskim: Przegląd i analiza zachowań  systemów szeregujących zadania w systemie Mesos w zależności od rodzaju wykonywanego zadania \\
-\vspace*{0.4cm}
-Tytuł pracy w języku angielskim: Mesos Scheduling System Evaluation \\
-\end{flushleft}
-
-\vspace*{1.5cm}
-\renewcommand{\arraystretch}{1.5}
-\begin{tabular}{|l  |l|}
-	\hline
- 	\multicolumn{2}{|l|} {Potwierdzenie przyjęcia pracy } \\
-	\hline
-	Opiekun pracy & Kierownik Katedry/Zakładu \hspace*{2cm} \\
-	&\\
-	\small \textit{podpis} & \small  \textit{podpis}\\
-	\hline
-	dr inż. Jerzy Demkowicz & dr hab. inż. Marek Moszyński, prof. nadzw. PG \hspace*{2cm} \\
-	&\\
-    \hline
-
-\end{tabular}
-
-\vspace*{2.5cm}
-
-\begin{flushleft}
-	Data oddania pracy do dziekanatu: \\
-\end{flushleft}
-
-
- \end{center}
-
-\end{titlepage}
-
-
-\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
-
-\newpage
-\thispagestyle {empty}
-
-\begin{center}
-\begin{tabular}{l l r}
- 	\includegraphics[scale=0.26]{pics/pg_weti.png} & \hspace*{5cm} &  \includegraphics[width=0.13\textwidth]{pics/eti.png}\\
-\end{tabular}
-\end{center}
-
-\vspace*{0.1cm}
-
-\begin{flushleft}
-	\large{\bf{OŚWIADCZENIE}}\\
-\end{flushleft}
-
-\vspace*{0.1cm}
-
-\begin{flushleft}
-
-	Imię i nazwisko: Michał Żyłowski\\
-	\vspace*{0.1cm}
-	Data i miejsce urodzenia:  XX.XX.XXXTODO, Toruń\\
-	\vspace*{0.1cm}
-	Nr albumu: 137448\\
-	\vspace*{0.1cm}
-	Wydział: Wydział Elektroniki, Telekomunikacji i Informatyki\\
-	\vspace*{0.1cm}
-	Kierunek: informatyka\\
-	\vspace*{0.1cm}
-	Poziom studiów: II stopnia - magisterskie\\
-	\vspace*{0.1cm}
-	Forma studiów: stacjonarne\\
-
-\end{flushleft}
-
-\vspace*{0.5mm}
-
-Ja, niżej podpisany(a), wyrażam zgodę/nie wyrażam zgody* na korzystanie z mojej pracy dyplomowej zatytułowanej: Przegląd i analiza zachowań  systemów szeregujących zadania w systemie Mesos w zależności od rodzaju wykonywanego zadania 
-do celów naukowych lub dydaktycznych. \footnote{ Zarządzenie Rektora Politechniki Gdańskiej nr 34/2009 z 9 listopada 2009 r., załącznik nr 8 do instrukcji archiwalnej PG.}\\
-Gdańsk, dnia  ........................  \hspace{5cm}
-\begin{tabular}{c}
-	\\
-	  .............................\\
-	\small \textit{podpis studenta}
-\end{tabular}
-
-\vspace*{0.5mm}
-
-Świadomy(a) odpowiedzialności karnej z tytułu naruszenia przepisów ustawy z dnia 4 lutego 1994 r. o prawie autorskim i prawach pokrewnych (Dz. U. z 2006 r., nr 90, poz. 631) i konsekwencji dyscyplinarnych określonych w ustawie Prawo o szkolnictwie wyższym (Dz. U. z 2012 r., poz. 572 z późn. zm.),\footnote{ Ustawa z dnia 27 lipca 2005 r. Prawo o szkolnictwie wyższym:\\ Art. 214 ustęp 4. W razie podejrzenia popełnienia przez studenta czynu podlegającego na przypisaniu sobie autorstwa istotnego fragmentu lub innych elementów cudzego utworu rektor niezwłocznie poleca przeprowadzenie postępowania wyjaśniającego.\\Art. 214 ustęp 6. Jeżeli w wyniku postępowania wyjaśniającego zebrany materiał potwierdza popełnienie czynu, o którym mowa w ust. 4, rektor wstrzymuje postępowanie o nadanie tytułu zawodowego do czasu wydania orzeczenia przez komisję dyscyplinarną oraz składa zawiadomienie o popełnieniu przestępstwa.} a także odpowiedzialności cywilno-prawnej oświadczam, że przedkładana praca dyplomowa została opracowana przeze mnie samodzielnie.\\
-\newline
-Niniejszy projekt dyplomowy nie był wcześniej podstawą żadnej innej urzędowej procedury związanej z nadaniem tytułu zawodowego.\\
-\newline
-Wszystkie informacje umieszczone w ww. projekcie dyplomowym, uzyskane ze źródeł pisanych i elektronicznych, zostały udokumentowane w wykazie literatury odpowiednimi odnośnikami zgodnie z art. 34 ustawy o prawie autorskim i prawach pokrewnych.\\
-\newline
-Potwierdzam zgodność niniejszej wersji projektu dyplomowego z załączoną wersją elektroniczną\\
-
-\noindent Gdańsk, dnia  ........................  \hspace{5cm}
-\begin{tabular}{c}
-	\\
-	  .............................\\
-	\small \textit{podpis studenta}
-\end{tabular}
-
-Upoważniam Politechnikę Gdańską do umieszczenia ww. pracy dyplomowej w wersji elektronicznej w otwartym, cyfrowym repozytorium instytucjonalnym Politechniki Gdańskiej oraz poddawania jej procesom weryfikacji i ochrony przed przywłaszczaniem jej autorstwa.\\
-\newline
-Gdańsk, dnia  ........................  \hspace{5cm}
-\begin{tabular}{c}
-	\\
-	  .............................\\
-	\small \textit{podpis studenta}
-\end{tabular}
-
-
-
-
-
-*) niepotrzebne skreślić
-
-
-
-
-\newpage
 \newgeometry{top=2.5cm, bottom=2.5cm, left=3.5cm, right=2.5cm}
-\setcounter{page}{1}
+\setcounter{page}{3}
 \onehalfspacing
-
+\justify
 \section*{Streszczenie}
 \addcontentsline{toc}{section}{Streszczenie}
 \indent  TODO\\
@@ -267,7 +114,6 @@ TODO: skróty na stronie ze skrótami: NVMe, SATA, LDAP, NIS, RAM, MySQL, API, H
 
 \newpage
 \newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
-
 \onehalfspacing
 
 \chapter{Wstęp i cel pracy}
@@ -415,6 +261,8 @@ W maszynach wirtualnych obrazy to ogromne pliki, które zawierają w sobie infor
 
 \newpage
 
+\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
+\onehalfspacing
 \chapter{Przegląd rozwiązań umożliwiających uruchamianie zadań na klastrach}
 
 \section{Interfejs transmisji wiadomości}
@@ -648,8 +496,9 @@ Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra 
 \item Kube-scheduler - proces, który odpowiedzialny jest za rozkładanie zadań pomiędzy poszczególne komputery klastra. Aplikacja tylko w niewielkim stopniu jest konfigurowalna, zaś sam algorytm rozdzielania zadań jest zamknięty wewnątrz aplikacji i nie ma możliwości dostosowania go do własnych potrzeb. Kube-scheduler decyzję o kolejkowaniu zadań na poszczególne komputery w klastrze oprze o tak zwane etykiety ang. \textit{labels}. Etykiety są opcjonalnym mechanizmem. Pozwalają one grupować poszczególe komputery klastra. Przykładowo komputery z dużą ilością dysków twardych mogą być oznaczone odpowiednią etykietą. Następnie uruchamiając zadanie, które wymaga wygenerowania dużej ilości danych, poprzez odpowiednią etykietę, może być skierowane właśnie na taki komputer. Do problemu rozdzielania zadań, wrócę jeszcze w kolejnym rozdziale, gdzie zostaną porównane możliwości Kubernetesa i Mesosa.
 \item Kube-dns - odpowiedzialny jest za komunikację sieciową z zewnątrz klastra do aplikacji uruchomionych wewnątrz. Mechanizm ten umożliwia uruchamianie na klastrze serwisów, które mają być dostępne z zewnątrz (np. strony internetowe, bazy danych). Do komunikacji wewnętrznej w klastrze wykorzystywane są plug-in'y sieciowe, które nie będą szczegółowo opisywane w tej pracy.
 \end{itemize}
-TODO: PODY, NODY, SECRETS, etc
 
+\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
+\onehalfspacing
 \chapter{Analiza rozwiązania Mesos oraz przegląd systemów szeregowania zadań}
 
 \section{Architektura rozwiązania Mesos}
@@ -1008,6 +857,8 @@ Aby uruchomić zadanie należy wykonać poniższe polecenie, jako parametr wskaz
 aurora job create [klaster] [zadanie]
 \end{lstlisting}
 
+\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
+\onehalfspacing
 \chapter{Praktyczna analiza przedstawionych rozwiązań}
 \section{Przygotowania klastra do wykonania analizy}
 \subsection{Specyfikacja techniczna klastra}
@@ -1154,6 +1005,8 @@ Poniżej przedstawiam rezultat uruchomienia powyższego obrazu w poszczeglnych k
 \item Kubernetes - przy domyślnej konfiguracji zadanie zostanie uruchomione w kontenerze Dockerowym i system zostanie doprowadzony do stanu jak z pierwszego punktu. Jednakże kubernetes posiada możliwość uruchomienia zadania z narzuconymi limitami. Wykorzystując ten mechanizm udało się odizolować zadanie od systemu operacyjnego. 
 \end{itemize}
 
+\newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
+\onehalfspacing
 \chapter{Podsumowanie wykonanej analizy}
 Opierając się na testach analizy izolacji oraz czasu uruchamiania, można stwierdzić, że najbardziej uniwersalnym rozwiązaniem jest wykorzystanie Mesosa z systemem szeregowania Marathon i uruchamianie zadań w oparciu o system konteneryzacji Docker. Jednakże w bardziej specyficznych przypadkach: 
 \begin{itemize}
