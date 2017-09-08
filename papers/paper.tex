@@ -142,7 +142,7 @@ Jeśli strona internetowa osiągnie prawdziwy sukces i obsługa będzie wymagał
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[scale=0.7]{pics/Selection_615.png}
-	\caption{Centrum danych Facebooka w Oregonie}
+	\caption{Centrum danych Facebooka w Oregonie.}
 	\label{facebook_dc}
 \end{figure}
 
@@ -297,7 +297,7 @@ Obecnie dokonano implementacji standardu MPI na wiele platform i języków progr
 	\begin{figure}[ht!]
 		\centering
 		\includegraphics[scale=0.7]{pics/mpi.jpg}
-		\caption{Logo projektu OpenMPI}
+		\caption{Logo projektu OpenMPI.}
 		\label{mpi_logo}
 	\end{figure}
 	\item MPICH to ogólnodostępna, darmowa i przenośna implementacja standardu MPI. Pozwala na przekazywanie komunikatów pomiędzy aplikacjami działającymi równolegle. Nadaje się do stosowania na małych klastrach. Najnowszą wersję biblioteki MPICH można pobrać ze strony domowej projektu. Biblioteki MPICH można używać zarówno na systemach klasy MS Windows jak i Unix. Rozwinięciem MPICH jest MPICH2. Powstała także wersja tej biblioteki o nazwie MPICH-G2 pozwalająca uruchamiać aplikacje równoległe w środowiskach gridowych, z wykorzystaniem pakietu Globus Toolkit jako warstwy pośredniej. Dzięki temu rozwiązaniu aplikacja może działać na kilku klastrach rozproszonych geograficznie.
@@ -315,7 +315,7 @@ Główną wadą podejścia MPI jest konieczność obsłużenia logiki klastra ob
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[scale=0.7]{pics/docker.png}
-	\caption{Logo systemu konteneryzacji Docker}
+	\caption{Logo systemu konteneryzacji Docker.}
 	\label{docker_logo}
 \end{figure}
 
@@ -326,14 +326,14 @@ Docker jest aplikacją, która dostarcza wiele różnorakich funkcji związanych
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[scale=0.7]{pics/docker_arch.png}
-	\caption{Wysokopoziomowe spojrzenie na architekturę systemu Docker}
+	\caption{Wysokopoziomowe spojrzenie na architekturę systemu Docker.}
 	\label{docker_arch}
 \end{figure}
 
 Na rysunku \ref{docker_arch} przedstawiono stos technologiczny rozwiązania Docker. Na samym dole stosu znajduje się serwer, czyli fizyczna maszyna na której uruchomiony jest system operacyjny. Ten uruchomiony system będzie służył do uruchamiania kontenerów i to jego zasoby będą wydzielane dla poszczególnych kontenerów. Na systemie hoście należy zainstalować pakiet docker-engine. Umożliwi to nam uruchamianie kontenerów z przygotowanych wcześniej obrazów, w których będą znajdowały się faktyczne aplikacje oraz wszystkie potrzebne tym aplikacjom biblioteki. Zaleca się aby uruchamiać tylko jedną aplikację w danym kontenerze. Ułatwia to chociażby wyciąganie logów z wnętrza kontenera, oraz odpowiedniemu wyizolowaniu aplikacji, gdyż zasoby możemy podać tyko dla konkretnego kontenera a nie dla każdego procesu. Tabela \ref{docker_cli} ukazuje listę komend rozwiązania docker, wraz z krótkim opisem i przykładem użycia. Najważniejszymi z nich są \textit{run, stop, delete, ps, images, build oraz exec}. Pozwalają one przejść tzw. \textit{Container lifecycle}, czyli cykl życia kontenera – zbudowanie obrazu, uruchomienie go, wykonanie w nim jakiejś operacji oraz zatrzymanie a następnie usunięcie go.
 
 \begin{table}[!htbp]
-\caption{Ważniejsze polecenia w programie docker (dla wersji 1.13.1)}
+\caption{Ważniejsze polecenia w programie docker (dla wersji 1.13.1).}
 \label{docker_cli}
 \begin{tabular}{|p{3cm}|p{11cm}|}
   \hline
@@ -395,7 +395,7 @@ Ze względu na monopol dockera pojawił się projekt wspierający inne formaty o
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=1]{pics/rkt-horizontal-color.png}
-	\caption{Logo projektu rkt}
+	\caption{Logo projektu rkt.}
 	\label{rkt_logo}
 \end{figure}
 
@@ -411,7 +411,7 @@ Rkt (Rys. \ref{rkt_logo}) jest produktem sponsorowanym przez firmę CoreOS i jes
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=1]{pics/rkt-architecure.jpg}
-	\caption{Architektura rozwiązania rkt}
+	\caption{Architektura rozwiązania rkt.}
 	\label{rkt_arch}
 \end{figure}
 
@@ -424,7 +424,7 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 \end{itemize}
 
 \begin{table}[!htbp]
-\caption{Lista obrazów, które mogą być użyte jako stage1 w systemie konteneryzacji rkt}
+\caption{Lista obrazów, które mogą być użyte jako stage1 w systemie konteneryzacji rkt.}
 \label{rkt_flavors}
 \centering
 \begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
@@ -456,7 +456,7 @@ Produkt \ref{mesos_logo} \textit{open source} przeznaczony do instalacji w centr
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=1]{pics/apache_mesos_logo.png}
-	\caption{Logo projektu Apache Mesos}
+	\caption{Logo projektu Apache Mesos.}
 	\label{mesos_logo}
 \end{figure}
 
@@ -470,12 +470,12 @@ Architektura Mesosa oraz istniejące na rynku \textit{frameworki} zostały opisa
 
 \subsection{Kubernetes}
 
-Kubernetes (rys. \ref{kube_logo}) - znacznie młodsza konkurencja rozwiązania Mesos (po raz pierwszy ogłoszony publicznie w połowie roku 2014). Sponsorowany i rozwijany jako wolne oprogramowanie przez korporację Google. Rozwiązanie od samego początku oparte było o kontenery Dockera. Nigdy nie powstała możliwość uruchamiania pojedyńczych procesów w systemie operacyjnym (tak jak w Mesosie). Kubernetes jako rozwiązanie młode często wprowadza zmiany architektoniczne i nowe możliwości. Jego niedojrzałość powoduje, że trzeba włożyć więcej pracy w aktualizacje klastra i zapewnienie stabilności. Przykładem zmiany, która doprowadziła do takich problemów może być mechanizm CRI \textit{Container Runtime Interface}. Ze względu na pojawiające się konkurencyjne do Dokera rozwiązania kontenerowe (rkt, OCI) w kubernetesie zaprojektowano mechanizm CRI. Jest to programowe API działające po specjalnie przygotowanej przez Google implementacji protokołu RPC - GRPC. Dany \textit{runtime} kontenerowy musi implementować to API by porozumiewać się z kubernetesem. Rozwiązania kontenerowe zaprojektowały swoje odzielne procesy, których celem była komunikacja po interfejsie CRI. Dla rkt jest to proces \textit{rktlet} a dla Dockera \textit{docker-shim}. Zainstalowanie wersji 1.6 wymagało również aktualizację konteneryzatora, a to wymagało wyłączenia bądź przemigrowania usług działających na danym komputerze w klastrze. Porównanie architektury kubernetesa 1.5 z 1.6 przedstawiono odpowiednie na rysunkach \ref{k8s_1_5} i \ref{k8s_1_6}.
+Kubernetes (rys. \ref{kube_logo}) - znacznie młodsza konkurencja rozwiązania Mesos (po raz pierwszy ogłoszony publicznie w połowie roku 2014). Sponsorowany i rozwijany jako wolne oprogramowanie przez korporację Google. Rozwiązanie od samego początku oparte było o kontenery Dockera. Nigdy nie powstała możliwość uruchamiania pojedyńczych procesów w systemie operacyjnym (tak jak w Mesosie). Kubernetes jako rozwiązanie młode często wprowadza zmiany architektoniczne i nowe możliwości. Jego niedojrzałość powoduje, że trzeba włożyć więcej pracy w aktualizacje klastra i zapewnienie stabilności. Przykładem zmiany, która doprowadziła do takich problemów może być mechanizm CRI \textit{Container Runtime Interface}. Ze względu na pojawiające się konkurencyjne do Dokera rozwiązania kontenerowe (rkt, OCI) w kubernetesie zaprojektowano mechanizm CRI. Jest to programowe API działające po specjalnie przygotowanej przez Google implementacji protokołu RPC - GRPC. Dany \textit{runtime} kontenerowy musi implementować to API by porozumiewać się z kubernetesem. Rozwiązania kontenerowe zaprojektowały swoje odzielne procesy, których celem była komunikacja po interfejsie CRI. Dla rkt jest to proces \textit{rktlet} a dla Dockera \textit{docker-shim}. Zainstalowanie wersji 1.6 wymagało również aktualizację konteneryzatora, a to wymagało wyłączenia bądź przemigrowania usług działających na danym komputerze w klastrze. Porównanie architektury kubernetesa 1.5 z 1.6 przedstawiono odpowiednie na rysunkach \ref{k8s_1_5} i \ref{k8s_1_6}. Dodatkowo na rysunku \ref{k8s_1_6} widoczne są zmiany związne z dodaniem interfejsu CRI.
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=1]{pics/Kubernetes-logo.png}
-	\caption{Logo projektu Kubernetes}
+	\caption{Logo projektu Kubernetes.}
 	\label{kube_logo}
 \end{figure}
 
@@ -484,14 +484,14 @@ Architektonicznie (Rys. \ref{k8s_1_6}) kubernetes jest mocno złożoną aplikacj
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=0.7]{pics/k8s_1_5.png}
-	\caption{Architektura projektu Kubernetes w wersji 1.5}
+	\caption{Architektura projektu Kubernetes w wersji 1.5.}
 	\label{k8s_1_5}
 \end{figure}
 
 \begin{figure}[!h]
 	\centering
 	\includegraphics[scale=0.7]{pics/k8s_1_6.png}
-	\caption{Architektura projektu Kubernetes w wersji 1.6. Widoczne są zmiany związne z dodaniem interfejsu CRI.}
+	\caption{Architektura projektu Kubernetes w wersji 1.6.}
 	\label{k8s_1_6}
 \end{figure}
 
@@ -577,7 +577,7 @@ Mesos w przeciwieństwie do kubernetesa nie posiada instalatora wskazywanego prz
 Prócz programowego API, które może zostać wykorzystane do tworzenia modułów i systemów szeregowania, Mesos udostępnia również HTTP REST API, które służy jednak głównie celom monitoringu klastra. Lista wybranych \textit{endpointów} znajduje się w tabli \ref{mesos_endpoints}.  Kilka endpointów zostało wykorzystanych do badań opisaych w rozdziale czwartym. 
 
 \begin{table}[!htbp]
-\caption{Lista \textit{endpointów} dostępnych w rozwiązaniu Mesos}
+\caption{Lista \textit{endpointów} dostępnych w rozwiązaniu Mesos.}
 \label{mesos_endpoints}
 \centering
 \begin{tabular}{|p{4cm}|p{10cm}|}
@@ -619,7 +619,7 @@ Prócz programowego API, które może zostać wykorzystane do tworzenia modułó
 Problem monitoringu klastra jest jedynm z ważniejszych, z jakich muszą sobie poradzić administratorzy DC. Wiele dostępnych narzędzi umożliwia przygotowanie zaawansowanych widoków i wykresów, które wykorzystują odpowiednie skrypty i odpytują system operacyjny o metryki. W przypadku Mesos'a część metryk udostępniona jest poprzez API \ref{mesos_metrics}.
 
 \begin{table}[!htbp]
-\caption{Lista metryk związanych z zasobami, dostępnych w rozwiązaniu Mesos}
+\caption{Lista metryk związanych z zasobami, dostępnych w rozwiązaniu Mesos.}
 \label{mesos_metrics}
 \centering
 \begin{tabular}{|p{4cm}|p{10cm}|}
@@ -666,7 +666,7 @@ Konfiguracja dla aplikacji \textit{mesos-master} i \textit{mesos-slave} mogą by
 \end{itemize}
 
 \begin{table}[!htbp]
-\caption{Lista ważniejszych flag konfigurujących klaster Mesos'a}
+\caption{Lista ważniejszych flag konfigurujących klaster Mesos'a.}
 \label{mesos_flags}
 \centering
 \begin{tabular}{|p{3cm}|p{3cm}|p{8cm}|}
@@ -698,7 +698,7 @@ Konfiguracja dla aplikacji \textit{mesos-master} i \textit{mesos-slave} mogą by
 W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych rozwiązań kontrolujących uruchamianie zadań na klastrach \ref{k8s_mesos_comparision}. Ze względu na dojrzałość projektu i przeniesienie odpowiedzialności za rozdzielanie zadań na produkty trzecie, do dalszej analizy wybrałem rozwiązanie Mesos. Również szerokie możliwości projektowania własnych modułów powoduje, że rozwiązanie jest znacznie bardziej przykrajalne do potrzeb danego DC.
 
 \begin{table}[!htbp]
-\caption{Porównanie Mesos'a i Kubernetesa}
+\caption{Porównanie Mesos'a i Kubernetesa.}
 \label{k8s_mesos_comparision}
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|p{6cm}|}
@@ -732,7 +732,7 @@ Do Mesosa zaprojektowano wiele frameworków (na dzień pisania tego dokumenu ofi
 
 Marathon to najstarszy \textit{framework} (tabela \ref{marathon_info}), (rys. \ref{marathon_logo}) do Mesos'a dostępny na rynku. 
 \begin{table}[!h]
-\caption{Podsumowanie systemu szeregowania Marathon}
+\caption{Podsumowanie systemu szeregowania Marathon.}
 \label{marathon_info}
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|}
@@ -777,7 +777,7 @@ Poniżej przedstawion przykładowy plik JSON, który uruchuchomi zadanie poprzez
 \subsection{Singularity}
 Singularity (tab \ref{singularity_info}, rys. (\ref{singularity_logo}) to największy konkurent rozwiązania \textit{Marathon}. Jego głównym wyróżnikiem jest dostarczanie wielu różnych typów zadań (Marathon jest nastawiony na uruchamianie zadań typu 'Serwis' - gdy zadanie nie jest uruchomione, będzie próbowany restart). W Singularity zadanie które ma być wykonane tylko raz i zakończone (na przykład proste obliczenie), można uruchomić jako zadanie \textit{One-shoot}. 
 \begin{table}[!h]
-\caption{Podsumowanie systemu szeregowania Singularity}
+\caption{Podsumowanie systemu szeregowania Singularity.}
 \label{singularity_info}
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|}
@@ -823,7 +823,7 @@ Poniżej przedstawiono krótki plik w formacie JSON, który umożliwia uruchomie
 Aurora (tab. \ref{aurora_info}, rys. (\ref{aurora_logo}) jest projektem rozwijanym przez fundację Apache w dużej części przez tych samych inżynierów co Mesos. Jego głównym wyróżnikiem jest sposób rezerwowania zasobów. Gdy większość frameworków działa na zasadzie otrzymania zadania do wykonania, a następnie próbie uzyskania zasobów do wykonania tego zadania, Aurora realizuje odwrotną politykę. Tuż po uruchomieniu Aurory, wszystkie zasoby klastra zostają przejęte przez framework, co powoduje szybsze uruchamianie zleconych zadań.
 
 \begin{table}[!h]
-\caption{Podsumowanie systemu szeregowania Aurora}
+\caption{Podsumowanie systemu szeregowania Aurora.}
 \label{aurora_info}
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|}
@@ -887,7 +887,7 @@ Na potrzeby przeprowadzenia pomiarów do niniejszej pracy magisterskiej otrzyma�
 Jeden z komputerów nie został włączony do klastra i posłużył jako host do zarządzania pozostałymi komputerami. Pozostałe 5 komputerów posłużyło do instalacji klastra. Na każdym z nich został zainstalowany Docker, Mesos oraz Kubernetes. Jeden z komputerów posłużył jako master, zaś pozostałe 4 zostałe wykorzystane jako komputery agenty. W tabeli \ref{klaster_magisterski} przedstawiono konfigurację klastra.
 
 \begin{table}[!h]
-\caption{Role poszczególnych komputerów w klastrze}
+\caption{Role poszczególnych komputerów w klastrze.}
 \label{klaster_magisterski}
 \centering
 \begin{tabular}{|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|}
@@ -987,7 +987,7 @@ time ./tester.sh
 \end{lstlisting}
 
 \begin{table}[!h]
-\caption{Uśrednione wyniki czasu uruchamiania zadań na poszczególnych frameworkach}
+\caption{Uśrednione wyniki czasu uruchamiania zadań na poszczególnych frameworkach.}
 \label{framework_results}
 \centering
 \begin{tabular}{|p{4cm}|p{4cm}|}
