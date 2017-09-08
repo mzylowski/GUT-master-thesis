@@ -30,7 +30,6 @@
 \counterwithin{figure}{chapter}
 \newcommand{\done}{\cellcolor{teal}done}
 \usepackage{xcolor}
-%\usepackage{gutthesis}
 
 \colorlet{punct}{red!60!black}
 \definecolor{background}{HTML}{EEEEEE}
@@ -68,8 +67,8 @@
 
 \begin{document}
 
-\includepdf[pages=1-4]{header.pdf}
-%\includepdf[pages=1-2]{formal-header.pdf}
+%\includepdf[pages=1-4]{header.pdf}
+\includepdf[pages=1-2]{formal-header.pdf}
 
 \newgeometry{tmargin=2.5cm, bmargin=2.5cm, lmargin=3.5cm, rmargin=2.5cm}
 \setlength{\parindent}{1.25cm}
@@ -81,18 +80,29 @@
 \justify
 \section*{Streszczenie}
 \addcontentsline{toc}{section}{Streszczenie}
-\indent  TODO\\
+\indent\indent Niesamowicie szybki rozwój społeczeństwa informacyjnego oraz rozwoju technologicznego sprawił, że potrzebne jest zaprojektowanie mechanizmów pozwalających efektywnie wykorzystywać istniejące centra danych. W związku z ograniczeniami fizyki i chemii co raz trudniej będzie wytwarzać szybsze procesory opierając się na klasycznych metodach. Administratorzy i właściciele centrów danych nie mogą wymieniać procesorów na szybsze, co powoduje konieczność kupowania kolejnych fizycznych serwerów. Również czynniki takie jak bezpieczeństwo, redundancja danych czy zapewnienie odpowiednio wysokiego poziomu świadczenia usług zmuszają do rozboduowy infrastruktury i kupowania kolejnych serwerów. Doprowadza to do zwiększenia kosztów utrzymania centrum danych czy do bardziej skomplikowanego procesu serwisowania.
 
-\noindent \textbf{Słowa kluczowe:} TODO
+Doktor z Uniwersytetu Stanforda, Christos Kozyrakis w jednej ze swoich prac omawia problem niskiej utylizacji centrum danych. By poprawić tą sytuację należało by umieszczać wiele niezależnych od siebie zadań na tych samych komputerach by efektywniej wykorzystywać dostępne na nich zasoby. Wymaga to opracowania wydajnych mechanizmów izolacji oraz optymalnych zasad rozdzielania zadań pomiędzy dostępne zasoby. Dzięki odpowiednio zaprojektowanym mechanizmom izolacji zadania nie będą ryzwalizowały o zasoby, zaś wykonywane operacje będą wykonywane niezależnie od innych procesów. Nawet awarie i błędy w innych zadaniach nie powinny interferować pozostałych. Dodatkowo zadania na klastrze powinny być tak rozdzielone by w pełni optymalizować obecne na nim zasoby. Na przykład zadania korzystające z tych samych portów powinny być uruchomione na innych komputerach. Wskazanym też jest uruchamianie na tym samym komputerze zadań obliczeniowych (mocno zużywających procesor) oraz zadań wykorzystujących przestrzeń dyskową (na przykład instancje klastrowalnych baz danych).
+
+Głównym celem tej pracy jest analiza obecnych na rynku rozwiązań związanych z konteneryzacją aplikacji. Konteneryzacja jest bardzo młodym pojęciem a pierwsze produkty ją wykorzystujące są ciągle rozwijane i często zmieniają się architektonicznie. W tej pracy dokonam testów izolacji poszczególnych rozwiązań. Drugim ważnym elementem tej pracy jest analiza orkiestratorów zadań uruchamianych w kontenerach. Skupię się tutaj na rozwiązaniu Mesos oraz systemach szeregowania zadań, które mogą z nim współpracować. 
+\newline
+\newline
+\newline
+\noindent \textbf{Słowa kluczowe:} chmury obliczeniowe, centrum danych, konteneryzacja, izolacja, orkiestracja
 
 \newpage
 \section*{Abstract}
 \addcontentsline{toc}{section}{Abstract}
 
-TODO\\
-\newline
-\textbf{Keywords:} TODO
+\indent\indent Incredibly rapid development of the information society and technological development has made it necessary to design mechanisms to effectively utilize existing data centers. Due to the limitations of physics and chemistry, it is more difficult to produce faster processors based on classical methods. Administrators and data center owners cannot swap CPUs to faster, which results is the need to purchase more physical servers. Also, factors such as security, data redundancy, or providing a high level of performance are forcing the infrastructure to go down and buying more servers. This leads to increased data center maintenance costs and to a more complex servicing process.
 
+Stanford University Phd. Christos Kozyrakis discusses the problem of low data center utilization in one of his papers. In order to improve this situation, administrator should to place many independent tasks on the same computers to make more efficient use of available resources. This requires the development of efficient isolation mechanisms and optimal separation of tasks between available resources. Due to the well-designed isolation mechanisms, tasks will not rationalize resources, and operations will be performed independently of other processes. Even failures and errors in other tasks should not interfere with the rest. In addition, tasks on the cluster should be separated so as to fully optimize the resources on the cluster. For example, tasks that use the same ports should run on other computers. It is also advisable to run computational tasks (heavy CPU usage) and disk space tasks (for example instances of clustered databases) on the same computer.
+
+The main purpose of this paper is to analyze the current market solutions related to containerized applications. Containerization is a very young concept and the first uses of it are constantly evolving and often changing architecturally. In this work I will test isolation of individual solutions. The second important element of this work is the analysis of the task force operators in containers. I will focus here on the Mesos solution and task scheduling systems that can work with it.
+\newline
+\newline
+\newline
+\textbf{Keywords:} cloud computing, data center, containerization, izolation, orchestration
 
 \newpage
 \newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
@@ -105,12 +115,19 @@ TODO\\
 \section*{Wykaz ważniejszych oznaczeń i skrótów}
 \addcontentsline{toc}{section}{Wykaz ważniejszych oznaczeń i skrótów}
 
-
-
-DC - (ang. \textit{Data Center}) Centrum Danych\\
-TODO: skróty na stronie ze skrótami: NVMe, SATA, LDAP, NIS, RAM, MySQL, API, HTTP, IP; 
-\newline
-
+API - (ang. \textit{Application Programming Interface}) interfejs programowy aplikacji \\ \newline
+CLI - (ang. \textit{Command Line Interface}) interfejs wiersza poleceń \\ \newline
+DC - (ang. \textit{Data Center}) Centrum Danych \\ \newline
+HTTP - (ang. \textit{Hypertext Transfer Protocol}) interfejs programowy aplikacji \\ \newline
+IP - (ang. \textit{IP address}) adres IP \\ \newline
+LDAP - (ang. \textit{Lightweight Directory Access Protocol}) lekki protokół usługi katalogowej \\ \newline
+NIS - (ang. \textit{Network Information Service}) serwis informacji sieciowej \\ \newline
+NVMe - (ang. \textit{Non-Volatile Memory Host Controller}) kontroler pamięci nieulotnych \\ \newline
+SATA - (ang. \textit{Serial Advanced Technology Attachment}) szeregowa magistrala komputerowa \\ \newline
+SQL - (ang. \textit{Structured Query Language}) strukturalny język zapytań \\ \newline
+RAM - (ang. \textit{Random access memory}) pamięć o dostępie swobodnym \\ \newline
+UI - (ang. \textit{user interface}) interfejs użytkownika \\ \newline
+URL - (ang. \textit{Uniform Resource Locator}) ujednolicony format lokacji zasobów \\ \newline
 
 \newpage
 \newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
@@ -125,7 +142,7 @@ Jeśli strona internetowa osiągnie prawdziwy sukces i obsługa będzie wymagał
 \begin{figure}[ht!]
 	\centering
 	\includegraphics[scale=0.7]{pics/Selection_615.png}
-	\caption{Centrum danych Facebooka w Oregonie, grafika pochodzi ze strony http://siteselection.com/}
+	\caption{Centrum danych Facebooka w Oregonie}
 	\label{facebook_dc}
 \end{figure}
 
@@ -236,7 +253,7 @@ To kryterium jest kluczowe dla pojęcia wirtualizacji. Instrukcje aplikacji powi
 \indent \indent Konteneryzowanie aplikacji – jest to sposób upakowania i uruchomienia procesów na komputerze w sposób izolowany. System operacyjny za pomocą specjalnych mechanizmów (cgroups, systemd) wydziela część zasobów i przekazuje je do procesu kontenera. W odróżnieniu do wirtualizacji zasoby te nie są oddane maszynie wirtualnej na stałe, zaś ciągle biorą udział w procesach wywłaszczania i przydzielania innym procesom. W konteneryzacji jądro systemu jest współdzielone, a nie tak jak w wirtualizacji, uruchamiane kolejne. Te dwa elementy sprawiają, że uruchamianie kontenerów jest znacznie szybsze niż maszyn wirtualnych[22], a to z kolei eliminuje część ich problemów. Mówi się o konteneryzacji, że jest „lekka”, właśnie ze względu na szybki czas uruchamiania. Główną ideą stojącą za kontenerami, jest możliwość łatwego uruchamiania ich bardzo wielu jednocześnie (nawet na kilka instancji na jednym fizycznym serwerze). W ujęciu kontenerowym nie należy obawiać się problemów z jednym serwerem, gdyż w danej chwili mamy uruchomionych kilka takich samych na innych serwerach w centrum danych. Rozdzielaniem ruchu pomiędzy instancjami danego kontenera zajmują się usługi typu load balancer. Posiadają one wiedzę o miejscu oraz lokalizacji, w której uruchomione są kolejne instancje, dzięki czemu mogą dynamicznie rozdzielać ruch na te najmniej obciążone.
 
 \subsection{Standard opisujący konteneryzację}\indent \indent
-Pierwszą poważną i ciągle najbardziej rozpowszechnioną na rynku implementacją kontenerów jest Docker[23]. Swoje rozwiązanie firma Docker przygotowała w oparciu o własne pomysły, bez opisywania rozbudowanego standardu. Gdy na rynku zaczęły pojawiać się nowe rozwiązania kontenerowe poprawiono pewne architektoniczne błędy, które miał Docker [TODO: szyk zdania]. Doprowadziło to do sporych różnic między produktami i wprowadziło chaos na rynku. Szybki rozwój chmur obliczeniowych sprawił, że tematem konteneryzacji zaczęło interesować się wiele firm, znacząco w tym miejscu wyprzedzając naukowców. Pierwszą próbą stworzenia standardu kontenerów podjęła firma CoreOS, tworząc swój produkt appc/spec – github.com/apppc/spec. Na dzień dzisiejszy projekt jest w pełni rozwijany przez kontrybutorów z wielu różnych firm.
+Pierwszą poważną i ciągle najbardziej rozpowszechnioną na rynku implementacją kontenerów jest Docker[23]. Swoje rozwiązanie firma Docker przygotowała w oparciu o własne pomysły, bez opisywania rozbudowanego standardu. Gdy na rynku zaczęły pojawiać się nowe rozwiązania kontenerowe poprawiono architektoniczne problemy, które wprowadził Docker. Doprowadziło to do sporych różnic między produktami i wprowadziło chaos na rynku. Szybki rozwój chmur obliczeniowych sprawił, że tematem konteneryzacji zaczęło interesować się wiele firm, znacząco w tym miejscu wyprzedzając naukowców. Pierwszą próbą stworzenia standardu kontenerów podjęła firma CoreOS, tworząc swój produkt appc/spec – github.com/apppc/spec. Na dzień dzisiejszy projekt jest w pełni rozwijany przez kontrybutorów z wielu różnych firm.
 
 \indent \indent W standardzie tym można znaleźć informacje na temat, czym jest skonteneryzowana aplikacja, jakie narzędzia powinny wchodzić w skład ekosystemu do konteneryzowania aplikacji, oraz w jaki sposób definiuje się obrazy kontenerów[24].
 
@@ -256,7 +273,7 @@ W maszynach wirtualnych obrazy to ogromne pliki, które zawierają w sobie infor
 	\item Udzielanie kontenerowi podwyższonych uprawnień – cześć operacji, które użytkownik chce wykonać w wewnątrz kontenera potrzebuje specjalnych uprawnień, szczególnie tam, gdzie chcemy dokonać komunikacji bądź zmiany z systemem hostem. Rozwiązania kontenerowe zazwyczaj pozwalają poprzez odpowiednie flagi udzielić kontenerowi odpowiednich uprawnień, tzn. przekazać do niego odpowiedni namespace. Przykładowo gdybyśmy chcieli w naszym kontenerze dodać nowe urządzenie sieciowe. Powinniśmy przekazać namespace sieciowy.
 	\item Błąd w jądrze systemu wpływa na cały system operacyjny hosta – jeśli w kontenerze dojdzie do błędu w jądrze systemu (ang. kernel panic) to cały system operacyjny hostujący kontenery zostanie zaafektowany. Jest to spowodowane wykorzystaniem kontenerach mechanizmu współdzielenia jądra systemu.
 	\item Rozwiązania izolacji zróżnicowane jakościowo w różnych rozwiązaniach kontenerowych – „lekkie” podejście do izolacji w kontenerach powoduje, że niektóre zadania mogą wpływać na system hosta. Chodzi tutaj o zadania, które bardzo szybko zajmują duże bloki pamięci.
-	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów[TODO big fail DOCKER]. Jednocześnie cały czas rozwijany jest standard opisujący konteneryzaję, co utrudnia osięgniecie w projektach kontenerowych wysokiej stabilności.
+	\item Konteneryzacja jest pojęciem młodym – rozwiązania dostępne na rynku bardzo szybko się zmieniają, często nie zachowując kompatybilności wstecznej. Powoduje to problemy ze stabilnym produkcyjnym używaniem kontenerów[TO DO źródło!!]. Jednocześnie cały czas rozwijany jest standard opisujący konteneryzaję, co utrudnia osięgniecie w projektach kontenerowych wysokiej stabilności.
 \end{itemize}
 
 \newpage
@@ -373,8 +390,6 @@ W związku z tym, że nie każdy użytkownik ma zestawione swoje repozytorium fi
 
 Ze względu na monopol dockera pojawił się projekt wspierający inne formaty obrazów. Mowa tutaj o repozytorium i web serwisie dostępnym pod adresem https://quay.io. Na rysunku \ref{quay_io} widoczny jest zrzut ekranu z serwisu quay.io.
 
-TODO: W razie czego można opisać jeszcze: marketing dockera, nie trzymanie się standardów, problemy platformy, praktyczne zastosowania.
-
 \subsection{Rozwiązanie konteneryzacyjne \textit{rkt}}
 
 \begin{figure}[!h]
@@ -431,7 +446,7 @@ Rozwiązanie rkt bazuje na tak zwanych ang. \textit{stage}. Pozwalają one na wy
 
 
 \newpage
-%TODO
+
 \section{Orkiestratory zadań}
 
 \subsection{Apach Mesos}
@@ -555,7 +570,7 @@ Podobnie jak w przypadku \textit{frameworków}, Mesos wystawia programowe API, k
 \end{itemize}
 
 \subsection{Instalacja klastra}
-Mesos w przeciwieństwie do kubernetesa nie posiada instalatora wskazywanego przez twórców rozwiązania. (Wyjątkiem jest tutaj komercyjna wersja - DC/OS). Kubernetes zaleca aby produkcyjne instalacje uruchamiane były w oparciu o kontenery. Jedyną aplikacją, która nie jest skonteneryzowana powinien być kubectl. Co więcej kubelet jest jedyną aplikacją, która uruchomiona jest w kotenerze bezpośrednio z poziomu systemd. Wszystkie pozostałe komponenty uruchamiane są już jako byty kubernetesa. W przypadku Mesos'a można zaobserwować znacznie bardziej tradycyjne podejście. Zalecaną metodą instalacji jest instalacja z paczek udostępnionych w repozytorium firmy \textit{mesosphere}. Skonfigurują się wtedy wszystkie \textit{unity systemd}, a na użytkowniku pozostanie jedynie kwestia umieszczenia adresów IP pozostałych elementów klastra. Niewątpliwie jednak, warto skorzystać z dobrodziejstw oferowanych przez izolację jaką dają kontenery i uruchomić klaster Mesosa z wykorzystaniem np technologii Docker. Jednym z podejść jest próba aplikowania obrazów przygotowywanych na potrzeby rozwiązania DC/OS. Innym skorzystanie z obrazów przygotowywanych przez innych użytkowników w ramach rozwoju wolnego oprogramowania. Ze względu na brak rozwiązania, które zadowalałoby mnie całkowicie postanowiłem w ramach tej pracy przygotować własne obrazy aplikacji \textit{mesos-master} oraz \textit{mesos-agent}. Więcej o tym produkcie powiem w kolejnym rozdziale. (TODO: namiary na rozdział).
+Mesos w przeciwieństwie do kubernetesa nie posiada instalatora wskazywanego przez twórców rozwiązania. (Wyjątkiem jest tutaj komercyjna wersja - DC/OS). Kubernetes zaleca aby produkcyjne instalacje uruchamiane były w oparciu o kontenery. Jedyną aplikacją, która nie jest skonteneryzowana powinien być kubectl. Co więcej kubelet jest jedyną aplikacją, która uruchomiona jest w kotenerze bezpośrednio z poziomu systemd. Wszystkie pozostałe komponenty uruchamiane są już jako byty kubernetesa. W przypadku Mesos'a można zaobserwować znacznie bardziej tradycyjne podejście. Zalecaną metodą instalacji jest instalacja z paczek udostępnionych w repozytorium firmy \textit{mesosphere}. Skonfigurują się wtedy wszystkie \textit{unity systemd}, a na użytkowniku pozostanie jedynie kwestia umieszczenia adresów IP pozostałych elementów klastra. Niewątpliwie jednak, warto skorzystać z dobrodziejstw oferowanych przez izolację jaką dają kontenery i uruchomić klaster Mesosa z wykorzystaniem np technologii Docker. Jednym z podejść jest próba aplikowania obrazów przygotowywanych na potrzeby rozwiązania DC/OS. Innym skorzystanie z obrazów przygotowywanych przez innych użytkowników w ramach rozwoju wolnego oprogramowania. Ze względu na brak rozwiązania, które zadowalałoby mnie całkowicie postanowiłem w ramach tej pracy przygotować własne obrazy aplikacji \textit{mesos-master} oraz \textit{mesos-agent}. Więcej o tym produkcie napiszę w rozdziale 4.1.2.
 
 \section{Interfejs i konfiguracja}
 \subsection{Mesos HTTP API}
@@ -672,9 +687,9 @@ Konfiguracja dla aplikacji \textit{mesos-master} i \textit{mesos-slave} mogą by
   \hline
   --quorum & Master & Obowiązkowa przy zestawieniu klastra wysokiej dostępności. Określa liczbę masterów, jaka powinna być podłączona do klastra, aby było możliwe przeprowadzenie elekcji lidera. Zalecane ustawienie liczba większa niż ilość masterów podzielona przez dwa. \\
   \hline
-  --zk & Master & Obowiązkowa przy zestawieniu klastra wysokiej dostępności. Adres URL (TODO: do słownika) usługi zookeeper. \\
+  --zk & Master & Obowiązkowa przy zestawieniu klastra wysokiej dostępności. Adres URL usługi zookeeper. \\
   \hline
-  --cluster & Master & Nazwa klastra, która będzie wyświetlana w logach oraz UI (TODO: do słownika) w przeglądarce. \\
+  --cluster & Master & Nazwa klastra, która będzie wyświetlana w logach oraz UI w przeglądarce. \\
   \hline
 \end{tabular}
 \end{table}
@@ -698,7 +713,7 @@ W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych roz
   \hline
   Mechanizm rozdzielania zadań & Opierający się na etykietach & Wystawiony na zewnątrz poprzez programowe API. \\
   \hline
-  CLI (TODO: Słownik) & Aplikacja kubectl & Brak. Ewentualna możliwość implementacji w oparciu o moduł lub framework. \\
+  CLI & Aplikacja kubectl & Brak. Ewentualna możliwość implementacji w oparciu o moduł lub framework. \\
   \hline
   Instalator & Kubespray, Kubeadm & Tylko w wersji komercyjnej DC/OS \\
   \hline
