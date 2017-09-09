@@ -202,7 +202,7 @@ Mesos jest rozwiązaniem rozpowszechnianym na licencji Apache 2.0. Od lat produk
 
 Rozwój platformy DC/OS sprawił, że w literaturze i Internecie brakuje informacji o samym Mesosie. Z tego powodu wraz z powstaniem tej pracy przygotowany został produkt mesos-dockerized – udostępniony na repozytorium na github.com. Mój produkt umożliwia zestawienie najnowszej stabilnej wersji Mesosa w kontenerach na swoim klastrze.
 
-Utworzenie tego produktu, pozwoliło mi na zestawienie klastra na infrastrukturze otrzymanej od prowadzącego, uruchomienie tam chmury obliczeniowej za pomocą Mesosa oraz wykonanie testów i pomiarów, które opisane są w dalszej części pracy. Opierając się o nie przygotowałem podsumowanie, które odpowiada na postawione w tej pracy pytanie: „Czy Mesos pozwala zwiększyć poziom utylizacji centrum danych, w którym jest uruchomiony”.
+Utworzenie tego produktu, pozwoliło mi na zestawienie klastra na infrastrukturze otrzymanej od prowadzącego, uruchomienie tam chmury obliczeniowej za pomocą Mesosa oraz wykonanie testów i pomiarów, które opisane są w dalszej części pracy. Opierając się o nie przygotowałem podsumowanie, które odpowiada na postawione w tej pracy pytanie: „Czy Mesos pozwala zwiększyć poziom utylizacji centrum danych, w którym jest uruchomiony?”.
 
 Praca zawiera opis poszczególnych \textit{frameworków}, szczegółowy opis architektury Mesos’a, wewnętrznych mechanizmów narzędzia, sposobów zestawiania go na klastrze, oraz instrukcje uruchamiania zadań. W kilku zdaniach poruszone zostały rozwiązania konkurencyjne, a problem izolacji został dokładnie sprawdzony również w innym, konkurencyjnym rozwiązaniu.
 
@@ -1037,6 +1037,8 @@ Analiza obecnych rozwiązań wskazuje kilka problemów, które mogłby być miej
 \item Orkiestrator Mesos powinien oferować mechanizm który uruchomi kontener w taki sposób by jego izolowanie było skuteczne. Taki mechanizm zaimplementowany jest w Kubernetesie (\textit{limits}).
 \item System konteneryzacji rkt w swoim domyślnym rozwiązaniu konteneryzacyjnym powinien skutecznie izolować problemy typu fork bomby.
 \end{itemize}
+
+Wracają do pytania postawionego na samym początku tej pracy pytania, odpowiednie przygotowanie i skonfigurowanie klastra Mesos'a umożliwia zwiększenie poziomu utylizacji w centrum danych. Dla większości zastosowań obecne systemy izolacji powinny być wystarczające, zaś mechanizm etykiet, które udostępniają \textit{frameworki} pozwoli na odpowiedzialne rozdzielenie zadań pomiędzy fizyczne serwery w DC. W pracy przedstawiłem również alternetywne rozwiązania, które mogą znaleźć zasotosowanie w sytuacjach w których Mesos nie będzie wystarczający.
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}
