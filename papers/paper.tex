@@ -119,6 +119,7 @@ API - (ang. \textit{Application Programming Interface}) interfejs programowy apl
 CLI - (ang. \textit{Command Line Interface}) interfejs wiersza poleceń \\ \newline
 DC - (ang. \textit{Data Center}) Centrum Danych \\ \newline
 DC/OS - (ang. \textit{Data Center Operation System}) komercyjna wersja systemu Mesos \\ \newline
+ELK - (ang. \textit{ElasticSearch Logstash Kibana}) zestaw narzędzi, które uruchomione jednocześnie umożliwiają łatwe monitorowanie i przeszukiwanie logów klastra. \\ \newline
 HTTP - (ang. \textit{Hypertext Transfer Protocol}) interfejs programowy aplikacji \\ \newline
 IP - (ang. \textit{IP address}) adres IP \\ \newline
 LDAP - (ang. \textit{Lightweight Directory Access Protocol}) lekki protokół usługi katalogowej \\ \newline
@@ -507,7 +508,7 @@ Prócz \textit{kubelet'a} i \textit{kubectl'a} do poprawnego działania klastra 
 	\label{k8s_dash}
 \end{figure}
 \item Etcd \cite{ad37} - jest to baza danych, która jest wykorzystywana przez klaster kubernetesa do przechowywania informacji na temat stanu klastra. Etcd jest projektem rozwijanym niezależnie od kubernetesa przez firmę CoreOS. Jest to nie relacyjna baza danych, która dane przechowuje w postaci: klucz - wartość. Etcd posiada możliwość sklastrowania swoich uruchomionych instancji, co zapewnia bezpieczeńtwo i niezawodność w przypadku awarii jednego z komputerów w klastrze.
-\item Kube-scheduler - proces, który odpowiedzialny jest za rozkładanie zadań pomiędzy poszczególne komputery klastra. Aplikacja tylko w niewielkim stopniu jest konfigurowalna, zaś sam algorytm rozdzielania zadań jest zamknięty wewnątrz aplikacji i nie ma możliwości dostosowania go do własnych potrzeb. Kube-scheduler decyzję o kolejkowaniu zadań na poszczególne komputery w klastrze oprze o tak zwane etykiety ang. \textit{labels}. Etykiety są opcjonalnym mechanizmem. Pozwalają one grupować poszczególe komputery klastra. Przykładowo komputery z dużą ilością dysków twardych mogą być oznaczone odpowiednią etykietą. Następnie uruchamiając zadanie, które wymaga wygenerowania dużej ilości danych, poprzez odpowiednią etykietę, może być skierowane właśnie na taki komputer. Do problemu rozdzielania zadań, wrócę jeszcze w kolejnym rozdziale, gdzie zostaną porównane możliwości Kubernetesa i Mesosa.
+\item Kube-scheduler - proces, który odpowiedzialny jest za rozkładanie zadań pomiędzy poszczególne komputery klastra. Aplikacja tylko w niewielkim stopniu jest konfigurowalna, zaś sam algorytm rozdzielania zadań jest zamknięty wewnątrz aplikacji i nie ma możliwości dostosowania go do własnych potrzeb. Kube-scheduler decyzję o kolejkowaniu zadań na poszczególne komputery w klastrze oprze o tak zwane etykiety ang. \textit{labels}. Etykiety są opcjonalnym mechanizmem. Pozwalają one grupować poszczególe komputery klastra. Przykładowo komputery z dużą ilością dysków twardych mogą być oznaczone odpowiednią etykietą. Następnie uruchamiając zadanie, które wymaga wygenerowania dużej ilości danych, poprzez odpowiednią etykietę, może być skierowane właśnie na taki komputer. Do problemu rozdzielania zadań, wrócę jeszcze w kolejnym rozdziale, gdzie zostaną porównane możliwości Kubernetesa i Mesosa \ref{k8s_mesos_comparision}.
 \item Kube-dns - odpowiedzialny jest za komunikację sieciową z zewnątrz klastra do aplikacji uruchomionych wewnątrz. Mechanizm ten umożliwia uruchamianie na klastrze serwisów, które mają być dostępne z zewnątrz (np. strony internetowe, bazy danych). Do komunikacji wewnętrznej w klastrze wykorzystywane są plug-in'y sieciowe, które nie będą szczegółowo opisywane w tej pracy.
 \end{itemize}
 
@@ -693,11 +694,11 @@ Konfiguracja dla aplikacji \textit{mesos-master} i \textit{mesos-slave} mogą by
 \end{tabular}
 \end{table}
 
-\subsection{Podsumowanie - porównanie Mesosa z Kubernetesem}
+\subsection{Porównanie Mesosa i Kubernetesem}
 W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych rozwiązań kontrolujących uruchamianie zadań na klastrach \ref{k8s_mesos_comparision}. Ze względu na dojrzałość projektu i przeniesienie odpowiedzialności za rozdzielanie zadań na produkty trzecie, do dalszej analizy wybrałem rozwiązanie Mesos. Również szerokie możliwości projektowania własnych modułów powoduje, że rozwiązanie jest znacznie bardziej przykrajalne do potrzeb danego DC.
 
-\begin{table}[!htbp]
-\caption{Porównanie Mesos'a i Kubernetesa.}
+\begin{table}[!t]
+\caption{Porównanie rozwiązania Mesos i Kubernetes.}
 \label{k8s_mesos_comparision}
 \centering
 \begin{tabular}{|p{4cm}|p{6cm}|p{6cm}|}
@@ -706,13 +707,23 @@ W ramach podsumowania dokonałem tabelarycznego porównania dwóch opisanych roz
   \hline
   Wsparcie dla trybu wysokiej dostępności & TAK, wspierane w kubelecie poprzez odpowiednią falgę. & TAK, wykorzystuje zewnętrzną aplikację - Zookeeper. \\
   \hline
-  Wspierane rozwiązania konteneryzacyjne & mesos-containerizer, docker & docker, rkt \\
+  Wspierane rozwiązania konteneryzacyjne & docker, rkt & mesos-containerizer, docker \\
   \hline
-  Przechowywanie stanu klastra & Baza danych ETCD & W pamięci procesów oraz w plikach w katalogu roboczym. \\
+  Przechowywanie stanu klastra & Baza danych ETCD & W pamięci procesów oraz w plikach w katalogu roboczym \\
   \hline
-  Mechanizm rozdzielania zadań & Opierający się na etykietach & Wystawiony na zewnątrz poprzez programowe API. \\
+  Mechanizm rozdzielania zadań & Opierający się na etykietach & Wystawiony na zewnątrz poprzez programowe API \\
   \hline
-  CLI & Aplikacja kubectl & Brak. Ewentualna możliwość implementacji w oparciu o moduł lub framework. \\
+  CLI & Aplikacja kubectl & Brak. Ewentualna możliwość implementacji w oparciu o moduł lub framework \\
+  \hline
+  Skalowanie zadań & Realizowalne przez konkretne typy zadań & Musi być wspierana przez \textit{framework}  \\
+  \hline
+  Równoważenie obciążenia & Realizowane za pomocą usługi \textit{kube-dns} lub odpowiednio skonfigurowanego procesu \textit{dnsmasq} & Administrator klastra musi zadbać o odpowiednie skonfigurowanie zewnętrznego narzedzia. Jedną z opcji może być proponowany przez firmę \textit{mesosphere} mesos-dns. \\
+  \hline
+  Monitoring klastra & Możliwość konfigurowania poziomu logowania poszczególnych usług kubernetesa. Opdpowiedzialność za przechowywanie logów poszczególnych zadań jest zrzucona na system konteneryzacji. Zalecanym stosem technologicznym do monitoringu jest \textit{Heapster, Influxdb i Grafana} & Logi z uruchomionych zadań przechowywane są w katalogu wskazanym przez odpowiednią zmienną. Dodatkowo usługi mesosa (mesos-master i mesos-slave) umożliwiają poziomu logowania. Na potrzeby zaawansowanego monitoringu zaleca się instalację zestawu ELK. \\
+  \hline
+  Rozwiązanie sieciowe & Za pomocą zewnętrznych wtyczek (\textit{flannel} lub \textit{calico}). Poszczególne kontenery uruchomione na klastrze mogą się komunikować między sobą. & W domyślnej konfiguracji kontenery nie otrzymują adresów IP. Możliwe jest zainstalowanie oprogramowania \textit{calico}, które pozwoli na adresowanie poszczególnych kontenerów.  \\
+  \hline
+  Skalowalność rozwiązania & Do 5000 fizycznych serwerów \cite{ad43}. Wąskim gardłem jest kube-dns oraz baza danych ETCD & Największą przeprowadzoną próbą jest 100000 urządzeń\cite{ad44}. Klaster był stabilny.\\
   \hline
   Instalator & Kubespray, Kubeadm & Tylko w wersji komercyjnej DC/OS \\
   \hline
@@ -1092,6 +1103,8 @@ Wracają do pytania postawionego na samym początku tej pracy pytania, odpowiedn
 \bibitem{ad40}Mesos community, \textit{Mesos Modules}, http://mesos.apache.org/documentation/latest/modules/, (data dostępu 22.06.2017)
 \bibitem{ad41}Dharmesh Kakadia, \textit{Apache Mesos Essentials}, 2015, ISBN: 1783288760
 \bibitem{ad42}Mesosphere, \textit{Dawn of the Singularity: A look at HubSpot’s first year on Mesos}, https://mesosphere.com/blog/dawn-of-the-singularity-a-look-at-hubspots-first-year-on-mesos/, (data dostępu 30.07.2017)
+\bibitem{ad43}Wojciech Tyczyński, \textit{Scalability updates in Kubernetes 1.6: 5,000 node and 150,000 pod clusters}, http://blog.kubernetes.io/2017/03/scalability-updates-in-kubernetes-1.6.html, (data dostępu 15.09.2017)
+\bibitem{ad44}Adam Bordelon Niklas, Quarfot Nielsen, \textit{Mesos, Elastically Scalable Operations, Simplified}, http://mesosphere.github.io/presentations/oscon-mesos-ops-2014/full/, (data dostępu 15.09.2017)
 \end{thebibliography}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
