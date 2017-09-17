@@ -131,6 +131,7 @@ SQL - (ang. \textit{Structured Query Language}) strukturalny język zapytań \\ 
 RAM - (ang. \textit{Random access memory}) pamięć o dostępie swobodnym \\ \newline
 UI - (ang. \textit{user interface}) interfejs użytkownika \\ \newline
 URL - (ang. \textit{Uniform Resource Locator}) ujednolicony format lokacji zasobów \\ \newline
+VPN - (ang. \textit{Virtual Private Network}) - Wirtualna Sieć Prywatna \\ \newline
 
 \newpage
 \newgeometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=3.5cm}
@@ -1050,6 +1051,113 @@ Analiza obecnych rozwiązań wskazuje kilka problemów, które mogłby być miej
 \end{itemize}
 
 Wracają do pytania postawionego na samym początku tej pracy pytania, odpowiednie przygotowanie i skonfigurowanie klastra Mesos'a umożliwia zwiększenie poziomu utylizacji w centrum danych. Dla większości zastosowań obecne systemy izolacji powinny być wystarczające, zaś mechanizm etykiet, które udostępniają \textit{frameworki} pozwoli na odpowiedzialne rozdzielenie zadań pomiędzy fizyczne serwery w DC. W pracy przedstawiłem również alternetywne rozwiązania, które mogą znaleźć zasotosowanie w sytuacjach w których Mesos nie będzie wystarczający.
+
+\newpage
+\chapter{Dodatek A: Przygotowanie i konfiguracja klastra}
+\section{Fizyczne połączenie klastra}
+
+Na potrzeby pracy magisterskiej otrzymałem 6 komputerów PC, które zostały połączone w klaster za pomocą dwóch \textit{routerów}. Otrzymałem od promotora jeden zewnętrzny adres IP (153.19.49.137). Aby się z nim połączyć należy wcześniej uzyskać dostęp do serwera VPN wydziału ETI Politechniki Gdańskiej. Router "brzegowy" został skonfigurowany tak, by cały ruch kierowany pod wskazany adres IP przekazywany był do pierwszego komputera klastra. Tym samym został on komputerem, który służył głównie do łączenia się z innymi, pozwalał na zarządzanie pozostałymi oraz hostował \textit{docker registry}. Schemat sieciowy klastra przedstawiony został na rysunku \ref{cluster_architecture}.
+
+\begin{figure}[ht!]
+	\centering
+	\includegraphics[scale=0.4]{pics/cluster-architecture.png}
+	\caption{Schemat fizycznych połączeń klastra użytego do badań}
+	\label{cluster_architecture}
+\end{figure}
+
+\section{Instalacja i zarządzanie klastrem}
+
+Podłączenie i zainstalowanie systemu operacyjnego było pierwszym zdaniem, które zostało zrealizowane w ramach przygotowywania tej pracy. Do instalacji wybrałem system Ubuntu 16.04, gdyż na dzień instalacji klastra była to ostatnia stabilna wersja. Dodatkowo za wyborem przemawiało produkcyjne wykorzystanie technologii \textit{systemd}. Klaster zainstalowany został 7 marca 2017. Na wszystkich komputerach został przygotowany uzytkownik zarówno dla mnie jak i dla promotora. Na wszystkich komputerach klastra zainstalowane zostało oprogramowanie \textit{Docker}. Najnowszą wersję dockera można zainstalować skryptem oferowanym przez producenta oprogramowania. Aby tego dokonać należy na koncie z uprawnienami administracyjnymi wykonać polecenie:
+
+\begin{lstlisting}
+wget -qO- https://get.docker.com/ | sh
+\end{lstlisting}
+
+Do zarządzania klastrem wykorzystałem oprogramowanie \textit{ansible}. Ansible to zestaw skryptów napisanych w języku Python, które umożliwają wykonywanie poleceń na zdalnych komputerach poprzez protokół SSH. Wiele z popularnych aplikacji (np. apt-get) w ansible są opisane jako moduły. Ułatwia to znacząco wydawanie poleceń oraz programowanie większej struktury. Ansible świetnie sprawdza się w kwestiach zarządzania wieloma komputerami. Dodatkowo ansible pozwala na programowanie własnych modułów oraz implementowanie złożonych systemów do instalowania całych zbiorów oprogramowania. Przykładem będzie tutaj opisywana w tej pracy aplikacja \textit{kubespray} (poprzednia nazwa: Kargo). Za pomocą tego projektu można uruchomić działający klaster kubernetesa (wraz z etcd, certyfikatami, wtyczką sieciową i wieloma innymi mechanizmami). Ansible umożliwia także wykonywanie pojedyńczych poleceń (tak zwane ad-hoc komendy). To głównie na nich będzie opierało się wydawanie komend poszczególnym komputerom klastra. 
+
+Aby poprawnie wydawać polecenia ansible na każdym komputerze musi być zainstalowany pakiet \textit{python-minimal} oraz użytkownik administracyjny musi być skonfigurowany tak, by mógł wykonywać operacje bez podawania hasła. Dodatkowo między komputerem na którym będzie działał ansible oraz komputerami zdalnymi, muszą być wymienione klucze SSH. Aby zainstalować ansible należy wykonać następujące polecenia:
+
+\begin{lstlisting}
+sudo apt-get update
+sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt-get update
+sudo apt-get install ansible
+\end{lstlisting}
+
+Zbiory opisujące poszczególne komputery klastra opisywane są w plikach \textit{inventory}. Plik ten dla opisywanego klastra wygląda następująco:
+\lstinputlisting[language=Json]{listings/inventory.cfg}
+
+W powyższym pliku komputer node01 umieszczony jest w grupie \textit{jump}. Komputer 02 w grupie master, a wszystkie pozostałe w grupie \textit{slaves}. Następnie grupy te można łączyć w kolejne większe nadgrupy. W przykładowym pliku konfiguracyjnym są to grupy \textit{cluster} i \textit{all}. Taki podział umożliwia odwołanie się do odpowiednich klastrów w każej sytuacji - można wykonywać tylko operacje na agentach, bądź na całym klastrze (master i agent), a jeśli to konieczne to nawet na komputerze pierwszym. Aby wykonać operację na tylko agentach należy posłużyć się następującą linijką:
+
+\begin{lstlisting}
+ansible -i inventory.cfg slaves -a "uptime"
+\end{lstlisting}
+
+Wynik polecenia:
+
+\begin{lstlisting}
+192.168.0.13 | SUCCESS | rc=0 >>                                                                                                                      
+ 15:01:35 up 3 days, 16:53,  1 user,  load average: 9.04, 8.59, 8.46
+ 
+192.168.0.12 | SUCCESS | rc=0 >>                                                                                                                      
+ 15:01:36 up 3 days, 16:53,  2 users,  load average: 3.19, 2.50, 2.22
+ 
+192.168.0.16 | SUCCESS | rc=0 >>                                                                                                                      
+ 15:01:36 up 3 days, 18:06,  1 user,  load average: 1.87, 1.85, 1.70
+ 
+192.168.0.15 | SUCCESS | rc=0 >>                                                                                                                      
+ 15:01:36 up 3 days, 16:53,  1 user,  load average: 2.60, 2.14, 1.85
+ 
+192.168.0.14 | SUCCESS | rc=0 >>                                                                                                                      
+ 15:01:37 up 3 days, 16:53,  1 user,  load average: 9.35, 8.89, 8.85
+\end{lstlisting}
+
+Natomiast polecenie, które pozwoli dokonać operacji jako administrator wymaga dodania flagi \textit{become}:
+\begin{lstlisting}
+ansible --become -i inventory.cfg cluster -a "mkdir -p /root/foo"
+\end{lstlisting}
+
+\section{Instalacja konteneryzatora rkt na komputerze \textit{node01}}
+
+Następujący zestaw poleceń pobierze paczkę przygotowaną dla ubuntu i dokona jej weryfikacji oraz instalacji:
+\begin{lstlisting}
+wget https://github.com/rkt/rkt/releases/download/v1.28.1/rkt_1.28.1-1_amd64.deb
+wget https://github.com/rkt/rkt/releases/download/v1.28.1/rkt_1.28.1-1_amd64.deb.asc
+gpg --verify rkt_1.28.1-1_amd64.deb.asc
+sudo dpkg -i rkt_1.28.1-1_amd64.deb
+\end{lstlisting}
+
+Następnie można uruchomić dowolny kontener celem sprawdzenia poprawności instalacji:
+\begin{lstlisting}[breaklines=true]
+sudo rkt run  --insecure-options=image --stage1-name=coreos.com/rkt/stage1-coreos:1.28.1 docker://redis
+\end{lstlisting}
+
+W przypadku braku obrazu stage1 lub obrazu właściwego kontenera, potrzebne obrazy zostaną pobrane. Rkt oraz redis zwrócą następujące wyjście:
+\begin{lstlisting}[breaklines=true]
+stage1: warning: no volume specified for mount point "volume-data", implicitly creating an "empty" volume. This volume will be removed when the pod is garbage-collected.
+stage1: Docker converted image, initializing implicit volume with data contained at the mount point "volume-data".
+stage1: warning: no volume specified for mount point "volume-data", implicitly creating an "empty" volume. This volume will be removed when the pod is garbage-collected.
+stage1: Docker converted image, initializing implicit volume with data contained at the mount point "volume-data".
+[331983.188498] redis[5]: 5:C 16 Sep 16:21:28.819 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+[331983.189347] redis[5]: 5:C 16 Sep 16:21:28.819 # Redis version=4.0.1, bits=64, commit=00000000, modified=0, pid=5, just started
+[331983.189946] redis[5]: 5:C 16 Sep 16:21:28.819 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+[331983.190530] redis[5]: 5:M 16 Sep 16:21:28.820 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+[331983.190926] redis[5]: 5:M 16 Sep 16:21:28.821 * Running mode=standalone, port=6379.
+[331983.191272] redis[5]: 5:M 16 Sep 16:21:28.821 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+[331983.191688] redis[5]: 5:M 16 Sep 16:21:28.821 # Server initialized
+[331983.193058] redis[5]: 5:M 16 Sep 16:21:28.821 * Ready to accept connections
+\end{lstlisting}
+
+\section{Instalacja kubernetesa na klastrze}
+Kubernetes na klastrze instalowany był, krótko po instalacji na nim systemu operacyjnego. Wykorzystałem do tego narzędzie \textit{Kargo}. Pomiędzy instalacją klastra a przygotowaniem tego podrozdziału twórcy rozwiązania zmienili nazwę projektu na \textit{Kubespray}. Aby zainstalować kubernetesa (w wersji 1.6) wykonałem następujące operacje:
+\begin{itemize}
+\item Pobranie repozytorium kodu:
+\begin{lstlisting}[breaklines=true]
+git clone https://github.com/kubernetes-incubator/kargo.git
+\end{lstlisting}
+\item Przygotowanie pliku inventory - należy wyedytwać plik 
+\end{itemize}
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}
