@@ -1149,15 +1149,105 @@ stage1: Docker converted image, initializing implicit volume with data contained
 [331983.193058] redis[5]: 5:M 16 Sep 16:21:28.821 * Ready to accept connections
 \end{lstlisting}
 
-\section{Instalacja kubernetesa na klastrze}
+\section{Instalacja Kubernetesa na klastrze}
 Kubernetes na klastrze instalowany był, krótko po instalacji na nim systemu operacyjnego. Wykorzystałem do tego narzędzie \textit{Kargo}. Pomiędzy instalacją klastra a przygotowaniem tego podrozdziału twórcy rozwiązania zmienili nazwę projektu na \textit{Kubespray}. Aby zainstalować kubernetesa (w wersji 1.6) wykonałem następujące operacje:
 \begin{itemize}
 \item Pobranie repozytorium kodu:
 \begin{lstlisting}[breaklines=true]
 git clone https://github.com/kubernetes-incubator/kargo.git
 \end{lstlisting}
-\item Przygotowanie pliku inventory - należy wyedytwać plik 
+\item Przygotowanie pliku inventory - należy wyedytować plik 'inventory' w katalogu inventory:
+\lstinputlisting[language=Json]{listings/k8s_inventory}
+\item Następnie należy uruhomić \textit{playbook} odpowiedzialny za instalację klastra. Jest to plik cluster.yml. Instalację można uruchomić za pomocą polecenia:
+\begin{lstlisting}[breaklines=true]
+ansible-playbook -u mzylowski -b --become-user=root -i inventory/inventory cluster.yml -e kube_network_plugin=flannel
+\end{lstlisting}
+Powyższa linia uruchomi instalację klastra kubernetesa oraz zainstaluje wtyczkę do komunikacji sieciowej \textit{flannel}.
+\item Po zakończeniu procesu instalacji warto sprawdzić wersję, by upewnić się, że wszystko zostało zainstalowane tak, jak tego oczekiwano:
+\begin{lstlisting}[breaklines=true]
+kubectl version
+\end{lstlisting}
+Polecenie zwróci wyjście:
+\begin{lstlisting}[breaklines=true]
+Client Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.1+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"6", GitVersion:"v1.6.1+coreos.0", GitCommit:"9212f77ed8c169a0afa02e58dce87913c6387b3e", GitTreeState:"clean", BuildDate:"2017-04-04T00:32:53Z", GoVersion:"go1.7.5", Compiler:"gc", Platform:"linux/amd64"}
+\end{lstlisting}
+\item Aby zweryfikować poprawność instalacji można z poziomu mastera uruchomić \textit{pod} kubernetesa. W tym celu należy wykonać polecenie:
+\begin{lstlisting}[breaklines=true]
+kubectl create -f nginx-deployment.yml
+\end{lstlisting}
+Zawartość pliku nginx-deployment.yml może wyglądać następująco:
+\lstinputlisting[language=Json]{listings/first_pod.yml}
+\item Ostatnim krokiem będzie sprawdzenie czy powyższe zadanie uruchomiło się z sukcesem:
+\begin{lstlisting}[breaklines=true]
+kubectl create -f nginx-deployment.yml
+\end{lstlisting}
+Wyjście z polecenia jest następujące:
+\begin{lstlisting}[breaklines=true]
+Name:                   nginx-deployment
+Namespace:              default
+CreationTimestamp:      Mon, 18 Sep 2017 18:59:17 +0200
+Labels:                 app=nginx
+Annotations:            deployment.kubernetes.io/revision=1
+Selector:               app=nginx
+Replicas:               2 desired | 2 updated | 2 total | 2 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:       app=nginx
+  Containers:
+   nginx:
+    Image:              nginx:1.7.9
+    Port:               80/TCP
+    Environment:        <none>
+    Mounts:             <none>
+  Volumes:              <none>
+Conditions:
+  Type          Status  Reason
+  ----          ------  ------
+  Available     True    MinimumReplicasAvailable
+  Progressing   True    NewReplicaSetAvailable
+OldReplicaSets: <none>
+NewReplicaSet:  nginx-deployment-4234284026 (2/2 replicas created)
+\end{lstlisting}
+Informacja o ilości 2 dostępnych replikach tego zadania potwierdza fakt, że zostało ono uruchomione.
 \end{itemize}
+
+\section{Instalacja oprogramowania Mesos na klastrze}
+Mesos został zainstalowany w oparciu o obrazy, które przygotowałem na potrzeby tej pracy.
+Poniżej plik Dockerfile obrazu mastera:
+\lstinputlisting[language=Json]{listings/master-dockerfile}
+Oraz dockerfile obrazu agenta:
+\lstinputlisting[language=Json]{listings/slave-dockerfile}
+
+Odpowiednie przygotowanie klastra polegało na napisaniu prawidłowych unitów systemd. Zostały one już zaprezentowane w podrozdziale 4.1.2
+
+Na rysunku \ref{marathon_example1} i \ref{marathon_example2} przedstawiam sposób uruchomienia przykładowego zadania w frameworku marathon.
+Po wejściu w przeglądarce pod adres http://192.168.0.12:8080 należy przejść do sekcji \textit{Create application} a następnie wypełnić pola w zależności o oczekiwań. W powyższym przykładzie zostaną uruchomione cztery instancje aplikacji httpd. Aplikacja ta zostanie uruchomiona w kontenerze Dockera (właściwy obraz zostanie wcześniej pobrany). Każda instancja otrzyma jeden procesor oraz 128 mega bajtów pamięci RAM.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.6]{pics/Selection_659.png}
+	\caption{Konfiguracja zasobów zadania httpd-check}
+	\label{marathon_example1}
+\end{figure}
+\newpage
+\begin{figure}[!t]
+	\centering
+	\includegraphics[scale=0.6]{pics/Selection_660.png}
+	\caption{Konfiguracja obrazów zadania httpd-check}
+	\label{marathon_example2}
+\end{figure}
+\newpage
+Po wybraniu przycisku \textit{Create application} zadanie zostanie ustawione w kolejce do wykonania, zaś po otrzymaniu oferty zadanie zostanie uruchomione. Dowodem tego stanu rzeczy będą informacje przedstawione w interfejsach graficznych Marathona oraz samego Mesos mastera (rys. \ref{mesos-proof}). Także wejście przez przeglądarkę pod adres agenta, na którym została uruchomiona jedna z instancji zadania powinno załadować domyślną stronę programu httpd.
+\begin{figure}[!h]
+	\centering
+	\includegraphics[scale=0.5]{pics/Selection_661.png}
+	\caption{Zrzut ekranu interfejsu graficznego Mesosa, przedstawiający aktywne zadania}
+	\label{mesos-proof}
+\end{figure}
+
+\newpage
 
 \listoffigures
 \addcontentsline{toc}{chapter}{Spis rysunków}
@@ -1212,7 +1302,7 @@ git clone https://github.com/kubernetes-incubator/kargo.git
 \bibitem{ad41}Dharmesh Kakadia, \textit{Apache Mesos Essentials}, 2015, ISBN: 1783288760
 \bibitem{ad42}Mesosphere, \textit{Dawn of the Singularity: A look at HubSpot’s first year on Mesos}, https://mesosphere.com/blog/dawn-of-the-singularity-a-look-at-hubspots-first-year-on-mesos/, (data dostępu 30.07.2017)
 \bibitem{ad43}Wojciech Tyczyński, \textit{Scalability updates in Kubernetes 1.6: 5,000 node and 150,000 pod clusters}, http://blog.kubernetes.io/2017/03/scalability-updates-in-kubernetes-1.6.html, (data dostępu 15.09.2017)
-\bibitem{ad44}Adam Bordelon Niklas, Quarfot Nielsen, \textit{Mesos, Elastically Scalable Operations, Simplified}, http://mesosphere.github.io/presentations/oscon-mesos-ops-2014/full/, (data dostępu 15.09.2017)
+\bibitem{ad44}Adam Bordelon, Niklas Nielsen, \textit{Mesos, Elastically Scalable Operations, Simplified}, http://mesosphere.github.io/presentations/oscon-mesos-ops-2014/full/, (data dostępu 15.09.2017)
 \end{thebibliography}
 
 \addcontentsline{toc}{chapter}{Bibliografia}
